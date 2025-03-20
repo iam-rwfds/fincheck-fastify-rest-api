@@ -1,4 +1,4 @@
-import awilix from "awilix";
+import * as awilix from "awilix";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { container } from "../../infra/container";
 
