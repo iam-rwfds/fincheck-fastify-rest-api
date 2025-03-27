@@ -37,10 +37,10 @@ const env = new Env({
 } as IEnv)
 
 const EnvSchema = v.object({
-  apiKey: v.pipe(
-    v.string(),
-    v.nonEmpty()
-  ),
+  // apiKey: v.pipe(
+  //   v.string(),
+  //   v.nonEmpty()
+  // ),
   port: v.pipe(
     v.number(),
     v.integer(),
