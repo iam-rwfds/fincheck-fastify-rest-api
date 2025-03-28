@@ -1,6 +1,6 @@
 import Fastify from "fastify";
-import { routes } from "./src/app/routes";
-import { env } from "./src/shared/config/env";
+import { env as projectEnv } from "~config/env";
+import { routes } from "~routes";
 
 const mainFastifyInstance = Fastify();
 
@@ -11,8 +11,8 @@ for (const route of routes) {
 const main = async () => {
   try {
     const listeningOptions = {
-      port: env.port,
-      host: env.host,
+      port: projectEnv.port,
+      host: projectEnv.host,
     };
 
     await mainFastifyInstance.listen(listeningOptions);

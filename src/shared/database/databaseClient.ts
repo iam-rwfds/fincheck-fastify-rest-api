@@ -1,7 +1,7 @@
 import * as awilix from "awilix";
 import * as AppWriteSdk from "node-appwrite";
-import { container } from "../../infra/container";
-import { env } from "../config/env";
+import { env } from "~config/env";
+import { container } from "~infra/container";
 
 const client = new AppWriteSdk.Client();
 
