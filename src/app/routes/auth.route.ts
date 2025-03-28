@@ -8,7 +8,7 @@ authRoutes.add({
   handler: (req, reply) => {
     const authProvider = container.resolve<AuthProvider>("authProvider");
 
-   return authProvider.signin(req, reply);
+    return authProvider.signin(req, reply);
   },
   method: "POST",
   url: "/signin",

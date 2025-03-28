@@ -17,7 +17,7 @@ class AppWriteEnv implements IAppWriteEnv {
     this.#endpoint = init.endpoint;
     this.#projectId = init.projectId;
     this.#apiKey = init.apiKey;
-    this.#mainDatabaseId = init.mainDatabaseId
+    this.#mainDatabaseId = init.mainDatabaseId;
   }
 
   get endpoint() {
