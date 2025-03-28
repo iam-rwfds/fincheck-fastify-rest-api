@@ -1,5 +1,6 @@
+import type { UsersController } from "~controllers/UsersController";
 import { container } from "../../infra/container";
-import type { UsersController } from "../controllers/UsersController";
+// import type { UsersController } from "../controllers/UsersController";
 import { BaseRouteSet } from "./baseRoute";
 
 const usersRoute = new BaseRouteSet("users");

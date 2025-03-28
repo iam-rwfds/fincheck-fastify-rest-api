@@ -1,6 +1,6 @@
 import * as awilix from "awilix";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { container } from "../../infra/container";
+import { container } from "~infra/container";
 
 type IProvider<
   Req extends FastifyRequest = FastifyRequest,

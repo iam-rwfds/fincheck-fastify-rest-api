@@ -1,5 +1,5 @@
-import { container } from "../../infra/container";
-import type { AuthProvider } from "../controllers/AuthProvider";
+import type { AuthProvider } from "~controllers/AuthProvider";
+import { container } from "~infra/container";
 import { BaseRouteSet } from "./baseRoute";
 
 const authRoutes = new BaseRouteSet("auth");
