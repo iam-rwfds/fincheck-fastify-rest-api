@@ -6,6 +6,7 @@
       "dependencies": {
         "awilix": "^12.0.4",
         "fastify": "^5.2.1",
+        "node-appwrite": "^15.0.1",
         "valibot": "^1.0.0",
       },
       "devDependencies": {
@@ -127,6 +128,10 @@
     "micromatch": ["micromatch@4.0.8", "", { "dependencies": { "braces": "^3.0.3", "picomatch": "^2.3.1" } }, "sha512-PXwfBhYu0hBCPw8Dn0E+WDYb7af3dSLVWKi3HGv84IdF4TyFoC0ysxFd0Goxw7nSv4T/PzEJQxsYsEiFCKo2BA=="],
 
     "no-case": ["no-case@3.0.4", "", { "dependencies": { "lower-case": "^2.0.2", "tslib": "^2.0.3" } }, "sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg=="],
+
+    "node-appwrite": ["node-appwrite@15.0.1", "", { "dependencies": { "node-fetch-native-with-agent": "1.7.2" } }, "sha512-vewchNVfgxJ1wHmdN2BRSHwoO+trfqKZf5Uq5wXfCHpnVtAtoO2amh8o5mwIfquP6qbZ+DMV25ZXp8MZYxPO7A=="],
+
+    "node-fetch-native-with-agent": ["node-fetch-native-with-agent@1.7.2", "", {}, "sha512-5MaOOCuJEvcckoz7/tjdx1M6OusOY6Xc5f459IaruGStWnKzlI1qpNgaAwmn4LmFYcsSlj+jBMk84wmmRxfk5g=="],
 
     "on-exit-leak-free": ["on-exit-leak-free@2.1.2", "", {}, "sha512-0eJJY6hXLGf1udHwfNftBqH+g73EU4B504nZeKpz1sYRKafAghwxEJunB2O7rDZkL4PGfsMVnTXZ2EjibbqcsA=="],
 
