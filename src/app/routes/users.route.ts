@@ -6,9 +6,10 @@ const usersRoute = new BaseRouteSet("users");
 
 usersRoute.add({
   handler: (req, reply) => {
-    const usersController = container.resolve<UsersController>("usersController");
+    const usersController =
+      container.resolve<UsersController>("usersController");
 
-   return usersController.me(req, reply);
+    return usersController.me(req, reply);
   },
   method: "GET",
   url: "/me",
