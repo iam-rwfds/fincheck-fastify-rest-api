@@ -36,9 +36,5 @@ class AuthProvider implements IProvider {
   }
 }
 
-container.register({
-  authProvider: awilix.asClass(AuthProvider),
-});
-
 export { AuthProvider };
 export type { IProvider as IAuthProvider };

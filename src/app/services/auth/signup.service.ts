@@ -18,6 +18,4 @@ class AuthSignUpService {
   }
 }
 
-container.register({
-  authSignUpService: awilix.asClass(AuthSignUpService),
-})
+export { AuthSignUpService };
