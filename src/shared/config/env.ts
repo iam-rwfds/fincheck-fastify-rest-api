@@ -6,8 +6,8 @@ interface IEnv {
   get host(): string;
   get port(): number;
 
-  get jwt(): IJwtEnv | null;
-  get appWrite(): IAppWriteEnv | null;
+  get jwt(): IJwtEnv;
+  get appWrite(): IAppWriteEnv;
 }
 
 class Env implements IEnv {
@@ -23,19 +23,19 @@ class Env implements IEnv {
     this.#jwt = init.jwt;
   }
 
-  get host() {
+  get host(): IEnv["host"] {
     return this.#host;
   }
 
-  get port() {
+  get port(): IEnv["port"] {
     return this.#port;
   }
 
-  get appWrite(): IAppWriteEnv | null {
+  get appWrite(): IEnv["appWrite"] {
     return this.#appWrite;
   }
 
-  get jwt(): IJwtEnv | null {
+  get jwt(): IEnv["jwt"] {
     return this.#jwt;
   }
 }
@@ -43,8 +43,8 @@ class Env implements IEnv {
 const env = new Env({
   port: Number(process.env.PORT),
   host: process.env.HOST || "",
-  appWrite: appWriteEnv || null,
-  jwt: jwtEnv || null,
+  appWrite: appWriteEnv,
+  jwt: jwtEnv,
 } satisfies IEnv);
 
 const EnvSchema = v.object({
