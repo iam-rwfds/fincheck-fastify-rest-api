@@ -32,7 +32,8 @@
       "~config/*": ["./src/shared/config/*"],
       "~routes/*": ["./src/app/routes/*"],
       "~routes": ["./src/app/routes/index.ts"],
-      "~utils/*": ["./src/utils/*"]
+      "~utils/*": ["./src/utils/*"],
+      "~exceptions/*": ["./src/app/exceptions/*"]
     }
   }
 }

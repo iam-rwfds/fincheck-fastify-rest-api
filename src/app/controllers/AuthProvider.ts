@@ -1,44 +1,46 @@
-import * as awilix from "awilix";
 import type { FastifyReply, FastifyRequest } from "fastify";
 import { container } from "~infra/container";
+import { TOKENS } from "~infra/tokens";
+import type { AuthSignUpService } from "../services/auth/signup.service";
 
 type IProvider<
   Req extends FastifyRequest = FastifyRequest,
   Reply extends FastifyReply = FastifyReply,
 > = {
-  signup(request: Req, reply: Reply): unknown;
+  signup(request: Req, reply: Reply): Promise<void>;
   signin(request: Req, reply: Reply): unknown;
 };
 
 class AuthProvider implements IProvider {
-  signup(request: FastifyRequest, reply: FastifyReply): unknown {
-    const authService = container.resolve("authService");
+  async signup(request: FastifyRequest, reply: FastifyReply) {
+    const authService = container.resolve<AuthSignUpService>(
+      TOKENS.Auth.Services.SignUp,
+    );
 
     const { body } = request;
 
-    const { value: tokenPayload } = authService.signup(body);
+    const resp = await authService.execute(body);
 
-    reply.code(tokenPayload.statusCode).send(tokenPayload.content);
+    resp.isRight() && reply.code(200).send(resp.value);
 
-    return null;
+    resp.isLeft() &&
+      reply.code(resp.value.statusCode).send({
+        message: resp.value.message,
+      });
   }
 
   signin(request: FastifyRequest, reply: FastifyReply): unknown {
-    const authService = container.resolve("authService");
+    // const authService = container.resolve(TOKENS.Auth.Services.SignIn);
 
-    const { body } = request;
+    // const { body } = request;
 
-    const { value: tokenPayload } = authService.signin(body);
+    // const { value: tokenPayload } = authService.signin(body);
 
-    reply.code(tokenPayload.statusCode).send(tokenPayload.content);
+    // reply.code(tokenPayload.statusCode).send(tokenPayload.content);
 
     return null;
   }
 }
-
-container.register({
-  authProvider: awilix.asClass(AuthProvider),
-});
 
 export { AuthProvider };
 export type { IProvider as IAuthProvider };

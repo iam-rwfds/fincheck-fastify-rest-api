@@ -1,41 +1,51 @@
 import * as v from "valibot";
 import { type IAppWriteEnv, appWriteEnv } from "./appwrite.env";
+import { type IJwtEnv, jwtEnv } from "./jwt.env";
 
 interface IEnv {
   get host(): string;
   get port(): number;
-  get appWrite(): IAppWriteEnv | null;
+
+  get jwt(): IJwtEnv;
+  get appWrite(): IAppWriteEnv;
 }
 
 class Env implements IEnv {
   #host: IEnv["host"];
   #port: IEnv["port"];
   #appWrite: IEnv["appWrite"];
+  #jwt: IEnv["jwt"];
 
   constructor(init: IEnv) {
     this.#host = init.host;
     this.#port = init.port;
-    this.#appWrite = init.appWrite || null;
+    this.#appWrite = init.appWrite;
+    this.#jwt = init.jwt;
   }
 
-  get host() {
+  get host(): IEnv["host"] {
     return this.#host;
   }
 
-  get port() {
+  get port(): IEnv["port"] {
     return this.#port;
   }
 
-  get appWrite(): IAppWriteEnv | null {
+  get appWrite(): IEnv["appWrite"] {
     return this.#appWrite;
+  }
+
+  get jwt(): IEnv["jwt"] {
+    return this.#jwt;
   }
 }
 
 const env = new Env({
   port: Number(process.env.PORT),
-  host: process.env.HOST,
-  appWrite: appWriteEnv || null,
-} as IEnv);
+  host: process.env.HOST || "",
+  appWrite: appWriteEnv,
+  jwt: jwtEnv,
+} satisfies IEnv);
 
 const EnvSchema = v.object({
   port: v.pipe(v.number(), v.integer(), v.minValue(1)),
