@@ -1,6 +1,4 @@
-import * as awilix from "awilix";
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { container } from "~infra/container";
 
 type IController<
   Req extends FastifyRequest = FastifyRequest,
@@ -22,10 +20,6 @@ class UsersController implements IController {
     return null;
   }
 }
-
-container.register({
-  usersController: awilix.asClass(UsersController),
-});
 
 export { UsersController };
 export type { IController as IUsersController };
