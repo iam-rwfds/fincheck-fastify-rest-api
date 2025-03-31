@@ -30,13 +30,13 @@ class AuthProvider implements IProvider {
   }
 
   signin(request: FastifyRequest, reply: FastifyReply): unknown {
-    const authService = container.resolve("authService");
+    // const authService = container.resolve(TOKENS.Auth.Services.SignIn);
 
-    const { body } = request;
+    // const { body } = request;
 
-    const { value: tokenPayload } = authService.signin(body);
+    // const { value: tokenPayload } = authService.signin(body);
 
-    reply.code(tokenPayload.statusCode).send(tokenPayload.content);
+    // reply.code(tokenPayload.statusCode).send(tokenPayload.content);
 
     return null;
   }
