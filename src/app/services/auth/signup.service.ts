@@ -1,20 +1,14 @@
 import jwt from "jsonwebtoken";
-import * as AppWriteSdk from "node-appwrite";
+import type * as AppWriteSdk from "node-appwrite";
 import { env } from "~config/env";
 import { UserEmailAlreadyExistsException } from "~exceptions/auth/user-email-already-exists.exception";
 import { container } from "~infra/container";
 import { TOKENS } from "~infra/tokens";
 import { type Either, either } from "~utils/either";
+import type { UsersRepository } from "../../repositories/users.repository";
 
 type Params = {
   [key in "name" | "email" | "password"]: string;
-};
-
-type UserDocument = {
-  name: string;
-  email: string;
-  password: string;
-  $id: string;
 };
 
 type Response = Either<
@@ -25,14 +19,14 @@ type Response = Either<
 >;
 
 abstract class AbstractService {
-  #databases: AppWriteSdk.Databases;
+  #usersRepository: UsersRepository;
 
   constructor() {
-    this.#databases = container.resolve<AppWriteSdk.Databases>(TOKENS.Database);
+    this.#usersRepository = container.resolve(TOKENS.Users.Repository);
   }
 
-  get databases() {
-    return this.#databases;
+  get usersRepository() {
+    return this.#usersRepository;
   }
 }
 
@@ -44,16 +38,7 @@ class AuthSignUpService extends AbstractService {
   }
 
   async execute(dto: Params): Promise<Response> {
-    const userWithSameEmail: UserDocument | null =
-      (
-        (
-          await this.databases.listDocuments(
-            env.appWrite.mainDatabaseId,
-            env.appWrite.collections.usersId,
-            [AppWriteSdk.Query.equal("email", dto.email)],
-          )
-        ).documents as object[] as UserDocument[]
-      )[0] || null;
+    const userWithSameEmail = await this.usersRepository.findByEmail(dto.email);
 
     if (userWithSameEmail) {
       return either.left(new UserEmailAlreadyExistsException());
@@ -63,17 +48,7 @@ class AuthSignUpService extends AbstractService {
       algorithm: "argon2id",
     });
 
-    const newUser = (await this.databases.createDocument(
-      env.appWrite.mainDatabaseId,
-      env.appWrite.collections.usersId,
-      "unique()",
-      {
-        name: dto.name,
-        email: dto.email,
-        password: hashedPassword,
-      } satisfies Params,
-    )) as Partial<AppWriteSdk.Models.Document> as Params &
-      AppWriteSdk.Models.Document;
+    const newUser = await this.usersRepository.create(dto);
 
     const accessToken = this.#generateAccessToken(newUser.$id);
 
