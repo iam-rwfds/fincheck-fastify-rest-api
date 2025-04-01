@@ -4,13 +4,14 @@ import { TOKENS } from "~infra/tokens";
 import type { AuthSignUpService } from "../services/auth/signup.service";
 import * as v from "valibot";
 import { SignUpSchema } from "~routes/validations/auth/signup.schema";
+import type { AuthSignInService } from "../services/auth/signin.service";
 
 type IProvider<
   Req extends FastifyRequest = FastifyRequest,
   Reply extends FastifyReply = FastifyReply,
 > = {
   signup(request: Req, reply: Reply): Promise<void>;
-  signin(request: Req, reply: Reply): unknown;
+  signin(request: Req, reply: Reply): Promise<void>;
 };
 
 class AuthProvider implements IProvider {
@@ -41,16 +42,21 @@ class AuthProvider implements IProvider {
       });
   }
 
-  signin(request: FastifyRequest, reply: FastifyReply): unknown {
-    // const authService = container.resolve(TOKENS.Auth.Services.SignIn);
+  async signin(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+    const authService = container.resolve<AuthSignInService>(
+      TOKENS.Auth.Services.SignIn,
+    );
 
-    // const { body } = request;
+    const { body } = request;
 
-    // const { value: tokenPayload } = authService.signin(body);
+    const resp = await authService.execute(body);
 
-    // reply.code(tokenPayload.statusCode).send(tokenPayload.content);
+    resp.isRight() && reply.code(200).send(resp.value);
 
-    return null;
+    resp.isLeft() &&
+      reply.code(resp.value.statusCode).send({
+        message: resp.value.message,
+      });
   }
 }
 
