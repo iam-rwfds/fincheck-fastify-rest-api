@@ -1,11 +1,10 @@
 import jwt from "jsonwebtoken";
-import type * as AppWriteSdk from "node-appwrite";
 import { env } from "~config/env";
 import { UserEmailAlreadyExistsException } from "~exceptions/auth/user-email-already-exists.exception";
 import { container } from "~infra/container";
 import { TOKENS } from "~infra/tokens";
+import type { UsersRepository } from "~repositories/users.repository";
 import { type Either, either } from "~utils/either";
-import type { UsersRepository } from "../../repositories/users.repository";
 
 type Params = {
   [key in "name" | "email" | "password"]: string;
