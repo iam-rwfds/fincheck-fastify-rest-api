@@ -2,6 +2,8 @@ import type { FastifyReply, FastifyRequest } from "fastify";
 import { container } from "~infra/container";
 import { TOKENS } from "~infra/tokens";
 import type { AuthSignUpService } from "../services/auth/signup.service";
+import * as v from "valibot";
+import { SignUpSchema } from "~routes/validations/auth/signup.schema";
 
 type IProvider<
   Req extends FastifyRequest = FastifyRequest,
@@ -19,7 +21,17 @@ class AuthProvider implements IProvider {
 
     const { body } = request;
 
-    const resp = await authService.execute(body);
+    const parsedSchema = v.safeParse(SignUpSchema, body);
+
+    if (!parsedSchema.success || parsedSchema.issues) {
+      reply.code(400).send({
+        message: parsedSchema.issues[0].message,
+      });
+
+      return;
+    }
+
+    const resp = await authService.execute(parsedSchema.output);
 
     resp.isRight() && reply.code(200).send(resp.value);
 
