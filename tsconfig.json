@@ -33,7 +33,8 @@
       "~routes/*": ["./src/app/routes/*"],
       "~routes": ["./src/app/routes/index.ts"],
       "~utils/*": ["./src/utils/*"],
-      "~exceptions/*": ["./src/app/exceptions/*"]
+      "~exceptions/*": ["./src/app/exceptions/*"],
+      "~repositories/*": ["./src/app/repositories/*"]
     }
   }
 }

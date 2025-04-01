@@ -7,7 +7,7 @@ const authRoutes = new BaseRouteSet("auth");
 
 authRoutes.add({
   handler: (req, reply) => {
-    const authProvider = container.resolve<AuthProvider>("authProvider");
+    const authProvider = container.resolve<AuthProvider>(TOKENS.Auth.Provider);
 
     return authProvider.signin(req, reply);
   },
