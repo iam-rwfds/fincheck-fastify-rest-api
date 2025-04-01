@@ -48,7 +48,10 @@ class AuthSignUpService extends AbstractService {
       algorithm: "argon2id",
     });
 
-    const newUser = await this.usersRepository.create(dto);
+    const newUser = await this.usersRepository.create({
+      ...dto,
+      password: hashedPassword,
+    });
 
     const accessToken = this.#generateAccessToken(newUser.$id);
 
