@@ -1,23 +1,32 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
+import { container } from "~infra/container";
+import { TOKENS } from "~infra/tokens";
+import type { UsersMeService } from "../services/users/me.service";
 
 type IController<
   Req extends FastifyRequest = FastifyRequest,
   Reply extends FastifyReply = FastifyReply,
 > = {
-  me(request: Req, reply: Reply): unknown;
+  me(request: Req, reply: Reply): Promise<void>;
 };
 
 class UsersController implements IController {
-  // #usersService: UsersService;
+  #usersMeService: UsersMeService;
 
-  // constructor(UsersService usersService) {
-  //   this.#usersService = usersService;
-  // }
+  constructor() {
+    this.#usersMeService = container.resolve<UsersMeService>(
+      TOKENS.Users.Services.Me,
+    );
+  }
 
-  me(request: FastifyRequest, reply: FastifyReply): unknown {
-    const { body } = request;
+  async me(request: FastifyRequest, reply: FastifyReply): Promise<void> {
+    const user = await this.#usersMeService.execute(request.user.id);
 
-    return null;
+    user.isRight()
+      ? reply.code(200).send(user)
+      : reply.code(user.value.statusCode).send({
+          message: user.value.message,
+        });
   }
 }
 

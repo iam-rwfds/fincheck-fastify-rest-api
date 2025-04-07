@@ -6,6 +6,7 @@ import type { User } from "../entities/user.entity";
 
 interface IRepository {
   findByEmail(email: User["email"]): Promise<User | null>;
+  findById(id: User["$id"]): Promise<User | null>;
 }
 
 abstract class AbstractRepository implements IRepository {
@@ -23,6 +24,7 @@ abstract class AbstractRepository implements IRepository {
   abstract create(
     dto: Pick<User, "email" | "name" | "password">,
   ): Promise<User>;
+  abstract findById(id: User["$id"]): Promise<User | null>;
 }
 
 class UsersRepository extends AbstractRepository implements IRepository {
@@ -65,6 +67,23 @@ class UsersRepository extends AbstractRepository implements IRepository {
     user.$id = userDocument.$id;
 
     return user;
+  }
+
+  async findById(id: User["$id"]): Promise<User | null> {
+    const userDocument = await this.databases.getDocument(
+      env.appWrite.mainDatabaseId,
+      env.appWrite.collections.usersId,
+      id,
+    );
+
+    const user = {} as User;
+
+    user.email = userDocument.email;
+    user.name = userDocument.name;
+    user.password = userDocument.password;
+    user.$id = userDocument.$id;
+
+    return user ?? null;
   }
 }
 
