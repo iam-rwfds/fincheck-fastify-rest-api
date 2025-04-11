@@ -1,6 +1,5 @@
 import * as AppWriteSdk from "node-appwrite";
 import { env } from "~config/env";
-import { container } from "~infra/container";
 import { TOKENS } from "~infra/tokens";
 import type { User } from "../entities/user.entity";
 
@@ -9,11 +8,15 @@ interface IRepository {
   findById(id: User["$id"]): Promise<User | null>;
 }
 
+type IRepositoryConstructorParams = {
+  [key in symbol]: AppWriteSdk.Databases;
+};
+
 abstract class AbstractRepository implements IRepository {
   #databases: AppWriteSdk.Databases;
 
-  constructor() {
-    this.#databases = container.resolve<AppWriteSdk.Databases>(TOKENS.Database);
+  constructor(deps: IRepositoryConstructorParams) {
+    this.#databases = deps[TOKENS.Database];
   }
 
   get databases() {

@@ -1,10 +1,9 @@
-import { InvalidCredentialsException } from "~exceptions/auth/invalid-credentials.exception";
-import { either, type Either } from "~utils/either";
-import { container } from "~infra/container";
-import { TOKENS } from "~infra/tokens";
 import jwt from "jsonwebtoken";
 import { env } from "~config/env";
+import { InvalidCredentialsException } from "~exceptions/auth/invalid-credentials.exception";
+import { TOKENS } from "~infra/tokens";
 import type { UsersRepository } from "~repositories/users.repository";
+import { type Either, either } from "~utils/either";
 
 type Params = {
   [key in "email" | "password"]: string;
@@ -17,11 +16,15 @@ type Response = Either<
   }
 >;
 
+type IServiceConstructorParams = {
+  [key in symbol]: UsersRepository;
+};
+
 abstract class AbstractService {
   #usersRepository: UsersRepository;
 
-  constructor() {
-    this.#usersRepository = container.resolve(TOKENS.Users.Repository);
+  constructor(deps: IServiceConstructorParams) {
+    this.#usersRepository = deps[TOKENS.Users.Repository];
   }
 
   get usersRepository() {

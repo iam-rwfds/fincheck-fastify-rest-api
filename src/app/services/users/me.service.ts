@@ -1,5 +1,4 @@
 import { InvalidCredentialsException } from "~exceptions/auth/invalid-credentials.exception";
-import { container } from "~infra/container";
 import { TOKENS } from "~infra/tokens";
 import type { UsersRepository } from "~repositories/users.repository";
 import { type Either, either } from "~utils/either";
@@ -10,13 +9,15 @@ type Response = Either<
   Pick<User, "name" | "email">
 >;
 
+type IServiceConstructorParams = {
+  [key in symbol]: UsersRepository;
+};
+
 abstract class AbstractService {
   #usersRepository: UsersRepository;
 
-  constructor() {
-    this.#usersRepository = container.resolve<UsersRepository>(
-      TOKENS.Users.Repository,
-    );
+  constructor(deps: IServiceConstructorParams) {
+    this.#usersRepository = deps[TOKENS.Users.Repository];
   }
 
   get usersRepository() {

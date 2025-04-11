@@ -1,24 +1,27 @@
 import type * as AppWriteSdk from "node-appwrite";
 import { env } from "~config/env";
-import { container } from "~infra/container";
 import { TOKENS } from "~infra/tokens";
 import type { Category } from "../entities/categories.entity";
 import type { User } from "../entities/user.entity";
 
 type CreateManyCategoriesParamDTO = Pick<Category, "icon" | "name" | "type">[];
 
-interface IRepository {
+type IRepositoryWithoutConstructor = {
   createMany(
     userId: User["$id"],
     dto: CreateManyCategoriesParamDTO,
   ): Promise<Category[]>;
-}
+};
 
-abstract class AbstractRepository implements IRepository {
+type IRepositoryConstructorParams = {
+  [key in symbol]: AppWriteSdk.Databases;
+};
+
+abstract class AbstractRepository implements IRepositoryWithoutConstructor {
   #databases: AppWriteSdk.Databases;
 
-  constructor() {
-    this.#databases = container.resolve<AppWriteSdk.Databases>(TOKENS.Database);
+  constructor(deps: IRepositoryConstructorParams) {
+    this.#databases = deps[TOKENS.Database];
   }
 
   get databases() {
@@ -31,7 +34,10 @@ abstract class AbstractRepository implements IRepository {
   ): Promise<Category[]>;
 }
 
-class CategoriesRepository extends AbstractRepository implements IRepository {
+class CategoriesRepository
+  extends AbstractRepository
+  implements IRepositoryWithoutConstructor
+{
   async createMany(
     userId: User["$id"],
     dto: CreateManyCategoriesParamDTO,
