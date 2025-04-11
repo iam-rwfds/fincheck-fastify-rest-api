@@ -3,13 +3,25 @@ import { AuthProvider } from "~controllers/AuthProvider";
 import { UsersController } from "~controllers/UsersController";
 import { databases } from "~database/databaseClient";
 import { CategoriesRepository } from "~repositories/categories.repository";
-import { UsersRepository } from "../app/repositories/users.repository";
-import { AuthSignInService } from "../app/services/auth/signin.service";
-import { AuthSignUpService } from "../app/services/auth/signup.service";
-import { UsersMeService } from "../app/services/users/me.service";
+import { UsersRepository } from "~repositories/users.repository";
 import { TOKENS } from "./tokens";
+import { AuthSignInService } from "~services/auth/signin.service";
+import { AuthSignUpService } from "~services/auth/signup.service";
+import { UsersMeService } from "~services/users/me.service";
 
-export const container = awilix.createContainer({
+type ContainerRegistrations = {
+  [key in symbol]:
+    | AuthSignUpService
+    | AuthSignInService
+    | AuthProvider
+    | CategoriesRepository
+    | UsersRepository
+    | UsersController
+    | UsersMeService
+    | typeof databases;
+};
+
+export const container = awilix.createContainer<ContainerRegistrations>({
   injectionMode: awilix.InjectionMode.PROXY,
   strict: true,
 });
@@ -27,3 +39,5 @@ container.register({
   [TOKENS.Users.Controller]: awilix.asClass(UsersController),
   [TOKENS.Users.Services.Me]: awilix.asClass(UsersMeService),
 });
+
+export type { ContainerRegistrations };
