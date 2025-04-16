@@ -29,7 +29,8 @@ export default fp(async (fastify, _opts) => {
       try {
         await request.jwtVerify();
 
-        const userId = await request.jwtDecode();
+        const decodedToken = await request.jwtDecode<{ sub: string }>();
+        const userId = decodedToken.sub;
 
         request.user = {
           id: userId,
