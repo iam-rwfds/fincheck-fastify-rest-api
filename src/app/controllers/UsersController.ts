@@ -24,7 +24,7 @@ class UsersController implements IController {
     const user = await this.#usersMeService.execute(request.user.id);
 
     user.isRight()
-      ? reply.code(200).send(user)
+      ? reply.code(200).send(user.value)
       : reply.code(user.value.statusCode).send({
           message: user.value.message,
         });
