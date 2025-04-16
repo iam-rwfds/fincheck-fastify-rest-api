@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken";
 import { env } from "~config/env";
 import { UserEmailAlreadyExistsException } from "~exceptions/auth/user-email-already-exists.exception";
-import { container } from "~infra/container";
 import { TOKENS } from "~infra/tokens";
 import type { CategoriesRepository } from "~repositories/categories.repository";
 import type { UsersRepository } from "~repositories/users.repository";
@@ -18,15 +17,19 @@ type Response = Either<
   }
 >;
 
+type IServiceConstructorParams = {
+  [key in symbol]: UsersRepository | CategoriesRepository;
+};
+
 abstract class AbstractService {
   #usersRepository: UsersRepository;
   #categoriesRepository: CategoriesRepository;
 
-  constructor() {
-    this.#usersRepository = container.resolve(TOKENS.Users.Repository);
-    this.#categoriesRepository = container.resolve(
-      TOKENS.Categories.Repository,
-    );
+  constructor(deps: IServiceConstructorParams) {
+    this.#usersRepository = deps[TOKENS.Users.Repository] as UsersRepository;
+    this.#categoriesRepository = deps[
+      TOKENS.Categories.Repository
+    ] as CategoriesRepository;
   }
 
   get usersRepository() {

@@ -1,5 +1,4 @@
 import type { FastifyReply, FastifyRequest } from "fastify";
-import { container } from "~infra/container";
 import { TOKENS } from "~infra/tokens";
 import type { UsersMeService } from "../services/users/me.service";
 
@@ -10,13 +9,15 @@ type IController<
   me(request: Req, reply: Reply): Promise<void>;
 };
 
+type IUsersControllerConstructorParams = {
+  [key in symbol]: UsersMeService;
+};
+
 class UsersController implements IController {
   #usersMeService: UsersMeService;
 
-  constructor() {
-    this.#usersMeService = container.resolve<UsersMeService>(
-      TOKENS.Users.Services.Me,
-    );
+  constructor(deps: IUsersControllerConstructorParams) {
+    this.#usersMeService = deps[TOKENS.Users.Services.Me];
   }
 
   async me(request: FastifyRequest, reply: FastifyReply): Promise<void> {
