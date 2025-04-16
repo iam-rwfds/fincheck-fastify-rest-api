@@ -1,4 +1,4 @@
-import type * as AppWriteSdk from "node-appwrite";
+import * as AppWriteSdk from "node-appwrite";
 import { env } from "~config/env";
 import { TOKENS } from "~infra/tokens";
 import type { Category } from "../entities/categories.entity";
@@ -48,7 +48,7 @@ class CategoriesRepository
       const result = await this.databases.createDocument(
         env.appWrite.mainDatabaseId,
         env.appWrite.collections.categoriesId,
-        "unique()",
+        AppWriteSdk.ID.unique(),
         {
           ...category,
           userId,
