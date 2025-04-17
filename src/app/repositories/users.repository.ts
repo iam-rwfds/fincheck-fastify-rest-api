@@ -73,20 +73,24 @@ class UsersRepository extends AbstractRepository implements IRepository {
   }
 
   async findById(id: User["$id"]): Promise<User | null> {
-    const userDocument = await this.databases.getDocument(
-      env.appWrite.mainDatabaseId,
-      env.appWrite.collections.usersId,
-      id,
-    );
+    try {
+      const userDocument = await this.databases.getDocument(
+        env.appWrite.mainDatabaseId,
+        env.appWrite.collections.usersId,
+        id,
+      );
 
-    const user = {} as User;
+      const user = {} as User;
 
-    user.email = userDocument.email;
-    user.name = userDocument.name;
-    user.password = userDocument.password;
-    user.$id = userDocument.$id;
+      user.email = userDocument.email;
+      user.name = userDocument.name;
+      user.password = userDocument.password;
+      user.$id = userDocument.$id;
 
-    return user ?? null;
+      return user;
+    } catch (_) {
+      return null;
+    }
   }
 }
 
