@@ -1,6 +1,6 @@
 import { TOKENS } from "~infra/tokens";
 import type { BankAccountRepository } from "~repositories/bank-accounts.repository";
-import { either, type Either } from "~utils/either";
+import { type Either, either } from "~utils/either";
 import type {
   BankAccount,
   BankAccountType,

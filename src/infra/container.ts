@@ -1,16 +1,16 @@
 import * as awilix from "awilix";
 import { AuthProvider } from "~controllers/AuthProvider";
 import { UsersController } from "~controllers/UsersController";
+import { BankAccountsController } from "~controllers/bank-accounts.controller";
 import { databases } from "~database/databaseClient";
+import { BankAccountRepository } from "~repositories/bank-accounts.repository";
 import { CategoriesRepository } from "~repositories/categories.repository";
 import { UsersRepository } from "~repositories/users.repository";
-import { TOKENS } from "./tokens";
 import { AuthSignInService } from "~services/auth/signin.service";
 import { AuthSignUpService } from "~services/auth/signup.service";
-import { UsersMeService } from "~services/users/me.service";
 import { CreateBankAccountService } from "~services/bank-accounts/create.service";
-import { BankAccountRepository } from "~repositories/bank-accounts.repository";
-import { BankAccountsController } from "~controllers/bank-accounts.controller";
+import { UsersMeService } from "~services/users/me.service";
+import { TOKENS } from "./tokens";
 
 type ContainerRegistrations = {
   [key in symbol]:

@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, it, mock } from "bun:test";
-import type { UsersRepository } from "~repositories/users.repository";
 import * as AppWriteSdk from "node-appwrite";
-import { AuthSignInService } from "./signin.service";
-import { TOKENS } from "~infra/tokens";
 import { InvalidCredentialsException } from "~exceptions/auth/invalid-credentials.exception";
+import { TOKENS } from "~infra/tokens";
+import type { UsersRepository } from "~repositories/users.repository";
 import type { User } from "../../entities/user.entity";
+import { AuthSignInService } from "./signin.service";
 
 let mockDatabases: AppWriteSdk.Databases;
 let mockUsersRepository: UsersRepository;

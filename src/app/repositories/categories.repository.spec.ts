@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, mock } from "bun:test";
 import * as AppWriteSdk from "node-appwrite";
-import { CategoriesRepository } from "./categories.repository";
 import { TOKENS } from "~infra/tokens";
+import { CategoriesRepository } from "./categories.repository";
 
 describe("CategoriesRepository", () => {
   let mockDatabases: AppWriteSdk.Databases;
