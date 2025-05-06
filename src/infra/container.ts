@@ -8,6 +8,9 @@ import { TOKENS } from "./tokens";
 import { AuthSignInService } from "~services/auth/signin.service";
 import { AuthSignUpService } from "~services/auth/signup.service";
 import { UsersMeService } from "~services/users/me.service";
+import { CreateBankAccountService } from "~services/bank-accounts/create.service";
+import { BankAccountRepository } from "~repositories/bank-accounts.repository";
+import { BankAccountsController } from "~controllers/bank-accounts.controller";
 
 type ContainerRegistrations = {
   [key in symbol]:
@@ -18,6 +21,9 @@ type ContainerRegistrations = {
     | UsersRepository
     | UsersController
     | UsersMeService
+    | BankAccountRepository
+    | BankAccountsController
+    | CreateBankAccountService
     | typeof databases;
 };
 
@@ -38,6 +44,12 @@ container.register({
   [TOKENS.Users.Repository]: awilix.asClass(UsersRepository),
   [TOKENS.Users.Controller]: awilix.asClass(UsersController),
   [TOKENS.Users.Services.Me]: awilix.asClass(UsersMeService),
+
+  [TOKENS.BankAccounts.Repository]: awilix.asClass(BankAccountRepository),
+  [TOKENS.BankAccounts.Controller]: awilix.asClass(BankAccountsController),
+  [TOKENS.BankAccounts.Services.Create]: awilix.asClass(
+    CreateBankAccountService,
+  ),
 });
 
 export type { ContainerRegistrations };
