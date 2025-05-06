@@ -23,12 +23,19 @@ abstract class AbstractRepository {
 
 class Repository extends AbstractRepository {
   async create(dto: Omit<BankAccount, "$id">): Promise<BankAccount> {
+    const { initialBalance, userId, ...data } = dto;
+
     const bankAccountDocument = await this.databases.createDocument(
       env.appWrite.mainDatabaseId,
       env.appWrite.collections.bankAccountsId,
       AppWriteSdk.ID.unique(),
       {
-        ...dto,
+        ...data,
+        initial_balance: initialBalance,
+        usersId: userId,
+      } satisfies Omit<typeof dto, "initialBalance" | "userId"> & {
+        initial_balance: (typeof dto)["initialBalance"];
+        usersId: (typeof dto)["userId"];
       },
     );
 
