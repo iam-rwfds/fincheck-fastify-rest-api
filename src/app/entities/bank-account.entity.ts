@@ -1,9 +1,9 @@
 import type { BaseEntity } from "./base.entity";
 
 const BANK_ACCOUNT_TYPES = Object.freeze({
-  CHECKING: "CHECKING",
-  INVESTMENT: "INVESTMENT",
-  CASH: "CASH",
+  CHECKING: "checking",
+  INVESTMENT: "investment",
+  CASH: "cash",
 });
 
 type BankAccountType =
