@@ -44,6 +44,14 @@ class Repository extends AbstractRepository {
     const bankAccount: BankAccount = {
       $id: bankAccountDocument.$id,
       color: bankAccountDocument.color,
+      initialBalance: bankAccountDocument.initial_balance,
+      name: bankAccountDocument.name,
+      type: bankAccountDocument.type,
+      userId: bankAccountDocument.usersId,
+    };
+
+    return bankAccount;
+  }
 
   async update(dto: BankAccount): Promise<BankAccount> {
     const {
