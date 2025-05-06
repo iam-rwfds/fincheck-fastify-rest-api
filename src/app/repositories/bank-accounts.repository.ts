@@ -20,6 +20,7 @@ abstract class AbstractRepository {
 
   abstract create(dto: Omit<BankAccount, "$id">): Promise<BankAccount>;
   abstract update(dto: BankAccount): Promise<BankAccount>;
+  abstract findOne(id: string): Promise<BankAccount | null>;
 }
 
 class Repository extends AbstractRepository {
@@ -66,6 +67,29 @@ class Repository extends AbstractRepository {
         usersId: (typeof dto)["userId"];
       },
     );
+
+    const bankAccount: BankAccount = {
+      $id: bankAccountDocument.$id,
+      color: bankAccountDocument.color,
+      initialBalance: bankAccountDocument.initial_balance,
+      name: bankAccountDocument.name,
+      type: bankAccountDocument.type,
+      userId: bankAccountDocument.usersId,
+    };
+
+    return bankAccount;
+  }
+
+  async findOne(id: string): Promise<BankAccount | null> {
+    const bankAccountDocument = await this.databases.getDocument(
+      env.appWrite.mainDatabaseId,
+      env.appWrite.collections.bankAccountsId,
+      id,
+    );
+
+    if (!bankAccountDocument) {
+      return null;
+    }
 
     const bankAccount: BankAccount = {
       $id: bankAccountDocument.$id,
