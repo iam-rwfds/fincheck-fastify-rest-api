@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, it } from "bun:test";
-import type { UsersRepository } from "~repositories/users.repository";
 import * as AppWriteSdk from "node-appwrite";
-import { UsersMeService } from "./me.service";
-import { TOKENS } from "~infra/tokens";
-import type { User } from "../../entities/user.entity";
 import { InvalidCredentialsException } from "~exceptions/auth/invalid-credentials.exception";
+import { TOKENS } from "~infra/tokens";
+import type { UsersRepository } from "~repositories/users.repository";
+import type { User } from "../../entities/user.entity";
+import { UsersMeService } from "./me.service";
 
 const user: User = {
   email: "user-email",

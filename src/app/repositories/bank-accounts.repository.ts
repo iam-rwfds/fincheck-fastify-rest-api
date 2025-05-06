@@ -1,7 +1,7 @@
 import * as AppWriteSdk from "node-appwrite";
+import { env } from "~config/env";
 import { TOKENS } from "~infra/tokens";
 import type { BankAccount } from "../entities/bank-account.entity";
-import { env } from "~config/env";
 
 type IRepositoryConstructorParams = {
   [key in symbol]: AppWriteSdk.Databases;

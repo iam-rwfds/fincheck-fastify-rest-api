@@ -30,6 +30,7 @@ class Controller implements IController {
         message: parsedSchema.issues[0].message,
       });
     }
+
     const bankAccount = await this.#createBankAccountService.execute({
       ...parsedSchema.output,
       userId: req.user.id,

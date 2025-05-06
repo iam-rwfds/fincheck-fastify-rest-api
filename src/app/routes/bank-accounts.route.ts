@@ -1,7 +1,7 @@
-import { container } from "~infra/container";
-import { BaseRouteSet } from "./baseRoute";
-import { TOKENS } from "~infra/tokens";
 import type { BankAccountsController } from "~controllers/bank-accounts.controller";
+import { container } from "~infra/container";
+import { TOKENS } from "~infra/tokens";
+import { BaseRouteSet } from "./baseRoute";
 
 const bankAccountsRoute = new BaseRouteSet("bank-accounts");
 

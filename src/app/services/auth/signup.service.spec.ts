@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, it, mock } from "bun:test";
+import type * as AppWriteSdk from "node-appwrite";
+import { UserEmailAlreadyExistsException } from "~exceptions/auth/user-email-already-exists.exception";
+import { TOKENS } from "~infra/tokens";
 import type { CategoriesRepository } from "~repositories/categories.repository";
 import type { UsersRepository } from "~repositories/users.repository";
-import type * as AppWriteSdk from "node-appwrite";
 import { AuthSignUpService } from "./signup.service";
-import { TOKENS } from "~infra/tokens";
-import { UserEmailAlreadyExistsException } from "~exceptions/auth/user-email-already-exists.exception";
 
 let mockDatabases: AppWriteSdk.Databases;
 let mockUsersRepository: UsersRepository;
