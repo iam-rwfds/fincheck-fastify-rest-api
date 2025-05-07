@@ -48,7 +48,7 @@ class Controller implements IController {
     });
 
     bankAccount.isRight()
-      ? reply.code(200).send(bankAccount.value)
+      ? reply.code(201).send(bankAccount.value)
       : reply.code(400).send({
           message: "Erro ao criar conta bancária.",
         });
