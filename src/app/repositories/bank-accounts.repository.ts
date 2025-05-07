@@ -18,7 +18,11 @@ abstract class AbstractRepository {
     return this.#databases;
   }
 
-  abstract create(dto: Omit<BankAccount, "$id">): Promise<BankAccount>;
+  abstract create(
+    dto: Omit<BankAccount, "$id" | "userId"> & {
+      userId: BankAccount["userId"]["$id"];
+    },
+  ): Promise<BankAccount>;
   abstract update(
     dto: Omit<BankAccount, "userId"> & {
       userId: BankAccount["userId"]["$id"];
@@ -28,7 +32,11 @@ abstract class AbstractRepository {
 }
 
 class Repository extends AbstractRepository {
-  async create(dto: Omit<BankAccount, "$id">): Promise<BankAccount> {
+  async create(
+    dto: Omit<BankAccount, "$id" | "userId"> & {
+      userId: BankAccount["userId"]["$id"];
+    },
+  ): Promise<BankAccount> {
     const { initialBalance, userId, ...data } = dto;
 
     const bankAccountDocument = await this.databases.createDocument(
@@ -38,10 +46,10 @@ class Repository extends AbstractRepository {
       {
         ...data,
         initial_balance: initialBalance,
-        usersId: userId.$id,
+        usersId: userId,
       } satisfies Omit<typeof dto, "initialBalance" | "userId"> & {
         initial_balance: (typeof dto)["initialBalance"];
-        usersId: (typeof dto)["userId"]["$id"];
+        usersId: (typeof dto)["userId"];
       },
     );
 
