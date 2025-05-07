@@ -11,6 +11,8 @@ import { AuthSignUpService } from "~services/auth/signup.service";
 import { CreateBankAccountService } from "~services/bank-accounts/create.service";
 import { UsersMeService } from "~services/users/me.service";
 import { TOKENS } from "./tokens";
+import { UpdateBankAccountService } from "~services/bank-accounts/update.service";
+import { AssertBankAccountUserRelationService } from "~services/bank-accounts/assert-bank-account-user-relation.service";
 
 type ContainerRegistrations = {
   [key in symbol]:
@@ -24,6 +26,8 @@ type ContainerRegistrations = {
     | BankAccountRepository
     | BankAccountsController
     | CreateBankAccountService
+    | UpdateBankAccountService
+    | AssertBankAccountUserRelationService
     | typeof databases;
 };
 
@@ -49,6 +53,12 @@ container.register({
   [TOKENS.BankAccounts.Controller]: awilix.asClass(BankAccountsController),
   [TOKENS.BankAccounts.Services.Create]: awilix.asClass(
     CreateBankAccountService,
+  ),
+  [TOKENS.BankAccounts.Services.Update]: awilix.asClass(
+    UpdateBankAccountService,
+  ),
+  [TOKENS.BankAccounts.Services.AssertUserRelation]: awilix.asClass(
+    AssertBankAccountUserRelationService,
   ),
 });
 
