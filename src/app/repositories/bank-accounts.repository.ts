@@ -19,6 +19,12 @@ abstract class AbstractRepository {
   }
 
   abstract create(dto: Omit<BankAccount, "$id">): Promise<BankAccount>;
+  abstract update(
+    dto: Omit<BankAccount, "userId"> & {
+      userId: BankAccount["userId"]["$id"];
+    },
+  ): Promise<BankAccount>;
+  abstract findOne(id: string): Promise<BankAccount | null>;
 }
 
 class Repository extends AbstractRepository {
@@ -32,7 +38,46 @@ class Repository extends AbstractRepository {
       {
         ...data,
         initial_balance: initialBalance,
-        usersId: userId,
+        usersId: userId.$id,
+      } satisfies Omit<typeof dto, "initialBalance" | "userId"> & {
+        initial_balance: (typeof dto)["initialBalance"];
+        usersId: (typeof dto)["userId"]["$id"];
+      },
+    );
+
+    const bankAccount: BankAccount = {
+      $id: bankAccountDocument.$id,
+      color: bankAccountDocument.color,
+      initialBalance: bankAccountDocument.initial_balance,
+      name: bankAccountDocument.name,
+      type: bankAccountDocument.type,
+      userId: bankAccountDocument.usersId,
+    };
+
+    return bankAccount;
+  }
+
+  async update(
+    dto: Omit<BankAccount, "userId"> & {
+      userId: BankAccount["userId"]["$id"];
+    },
+  ): Promise<BankAccount> {
+    const {
+      $id,
+      userId: usersId,
+      initialBalance: initial_balance,
+      ...data
+    } = dto;
+
+    const bankAccountDocument = await this.databases.updateDocument(
+      env.appWrite.mainDatabaseId,
+      env.appWrite.collections.bankAccountsId,
+      $id,
+      {
+        ...data,
+        initial_balance,
+        usersId: usersId,
+        $id,
       } satisfies Omit<typeof dto, "initialBalance" | "userId"> & {
         initial_balance: (typeof dto)["initialBalance"];
         usersId: (typeof dto)["userId"];
@@ -42,10 +87,33 @@ class Repository extends AbstractRepository {
     const bankAccount: BankAccount = {
       $id: bankAccountDocument.$id,
       color: bankAccountDocument.color,
-      initialBalance: bankAccountDocument.initialBalance,
+      initialBalance: bankAccountDocument.initial_balance,
       name: bankAccountDocument.name,
       type: bankAccountDocument.type,
-      userId: bankAccountDocument.userId,
+      userId: bankAccountDocument.usersId,
+    };
+
+    return bankAccount;
+  }
+
+  async findOne(id: string): Promise<BankAccount | null> {
+    const bankAccountDocument = await this.databases.getDocument(
+      env.appWrite.mainDatabaseId,
+      env.appWrite.collections.bankAccountsId,
+      id,
+    );
+
+    if (!bankAccountDocument) {
+      return null;
+    }
+
+    const bankAccount: BankAccount = {
+      $id: bankAccountDocument.$id,
+      color: bankAccountDocument.color,
+      initialBalance: bankAccountDocument.initial_balance,
+      name: bankAccountDocument.name,
+      type: bankAccountDocument.type,
+      userId: bankAccountDocument.usersId.$id,
     };
 
     return bankAccount;
