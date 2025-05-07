@@ -25,7 +25,7 @@ class Service extends AbstractService {
   async execute(id: string, userId: string): Promise<ServiceResponse> {
     const bankAccount = await this.bankAccountsRepository.findOne(id);
 
-    if (!bankAccount || bankAccount.userId !== userId) {
+    if (!bankAccount || bankAccount.userId.$id !== userId) {
       return either.left(new BankAccountUserNotFoundException());
     }
 

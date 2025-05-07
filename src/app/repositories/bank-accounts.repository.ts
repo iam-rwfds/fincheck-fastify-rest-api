@@ -19,7 +19,11 @@ abstract class AbstractRepository {
   }
 
   abstract create(dto: Omit<BankAccount, "$id">): Promise<BankAccount>;
-  abstract update(dto: BankAccount): Promise<BankAccount>;
+  abstract update(
+    dto: Omit<BankAccount, "userId"> & {
+      userId: BankAccount["userId"]["$id"];
+    },
+  ): Promise<BankAccount>;
   abstract findOne(id: string): Promise<BankAccount | null>;
 }
 
@@ -34,10 +38,10 @@ class Repository extends AbstractRepository {
       {
         ...data,
         initial_balance: initialBalance,
-        usersId: userId,
+        usersId: userId.$id,
       } satisfies Omit<typeof dto, "initialBalance" | "userId"> & {
         initial_balance: (typeof dto)["initialBalance"];
-        usersId: (typeof dto)["userId"];
+        usersId: (typeof dto)["userId"]["$id"];
       },
     );
 
@@ -53,7 +57,11 @@ class Repository extends AbstractRepository {
     return bankAccount;
   }
 
-  async update(dto: BankAccount): Promise<BankAccount> {
+  async update(
+    dto: Omit<BankAccount, "userId"> & {
+      userId: BankAccount["userId"]["$id"];
+    },
+  ): Promise<BankAccount> {
     const {
       $id,
       userId: usersId,
@@ -68,7 +76,7 @@ class Repository extends AbstractRepository {
       {
         ...data,
         initial_balance,
-        usersId,
+        usersId: usersId,
         $id,
       } satisfies Omit<typeof dto, "initialBalance" | "userId"> & {
         initial_balance: (typeof dto)["initialBalance"];
@@ -105,7 +113,7 @@ class Repository extends AbstractRepository {
       initialBalance: bankAccountDocument.initial_balance,
       name: bankAccountDocument.name,
       type: bankAccountDocument.type,
-      userId: bankAccountDocument.usersId,
+      userId: bankAccountDocument.usersId.$id,
     };
 
     return bankAccount;

@@ -1,4 +1,5 @@
 import type { BaseEntity } from "./base.entity";
+import type { User } from "./user.entity";
 
 const BANK_ACCOUNT_TYPES = Object.freeze({
   CHECKING: "checking",
@@ -14,7 +15,7 @@ type BankAccount = {
   initialBalance: number;
   type: BankAccountType;
   color: string;
-  userId: string;
+  userId: User;
   // transactions?: unknown[]
 } & BaseEntity;
 
