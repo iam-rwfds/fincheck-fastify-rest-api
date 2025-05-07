@@ -19,7 +19,14 @@ bankAccountsRoute.add({
 });
 
 bankAccountsRoute.add({
-  handler: () => {},
+  handler: (req, reply) => {
+    const bankAccountsController = container.resolve<BankAccountsController>(
+      TOKENS.BankAccounts.Controller,
+    );
+
+    return bankAccountsController.update(req, reply);
+  },
+  onRequest: (req, reply) => req.server.authenticate(req, reply),
   method: "PUT",
   url: "/:id",
 });
