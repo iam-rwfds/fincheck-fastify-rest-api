@@ -15,7 +15,7 @@ type BankAccount = {
   initialBalance: number;
   type: BankAccountType;
   color: string;
-  userId: User;
+  userId: string;
   // transactions?: unknown[]
 } & BaseEntity;
 

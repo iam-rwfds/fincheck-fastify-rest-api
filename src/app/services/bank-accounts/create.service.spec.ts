@@ -1,10 +1,9 @@
-import * as AppWriteSdk from "node-appwrite";
 import { beforeEach, describe, expect, it, spyOn } from "bun:test";
+import * as AppWriteSdk from "node-appwrite";
+import { TOKENS } from "~infra/tokens";
 import type { BankAccountRepository } from "~repositories/bank-accounts.repository";
 import type { BankAccount } from "../../entities/bank-account.entity";
 import { CreateBankAccountService } from "./create.service";
-import { TOKENS } from "~infra/tokens";
-import type { User } from "../../entities/user.entity";
 
 let mockDatabases: AppWriteSdk.Databases;
 let mockBankAccountRepository: BankAccountRepository;
@@ -28,9 +27,7 @@ describe("CreateBankService", async () => {
       return {
         ...dto,
         $id: AppWriteSdk.ID.unique(),
-        userId: {
-          $id: userId,
-        } as Partial<User> as User,
+        userId: userId,
       };
     };
 
@@ -52,9 +49,7 @@ describe("CreateBankService", async () => {
       initialBalance: 150,
       color: "#FFFFFF",
       type: "cash",
-      userId: {
-        $id: userId,
-      },
+      userId,
     });
   });
 });
