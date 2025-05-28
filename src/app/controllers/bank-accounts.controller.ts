@@ -12,7 +12,7 @@ type IController<
   Req extends FastifyRequest = FastifyRequest,
   Reply extends FastifyReply = FastifyReply,
 > = {
-  [key in "create" | "show" | "update"]: (
+  [key in "create" | "show" | "update" | "delete"]: (
     req: Req,
     reply: Reply,
   ) => Promise<void>;
@@ -114,6 +114,8 @@ class Controller implements IController {
 
     reply.code(200).send(bankAccounts.value);
   }
+
+  async delete(req: FastifyRequest, reply: FastifyReply) {}
 }
 
 export { Controller as BankAccountsController };
