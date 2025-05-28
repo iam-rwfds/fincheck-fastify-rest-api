@@ -29,6 +29,7 @@ abstract class AbstractRepository {
     },
   ): Promise<BankAccount>;
   abstract findOne(id: string): Promise<BankAccount | null>;
+  abstract getAllFromUserById(userId: string): Promise<BankAccount[]>;
 }
 
 class Repository extends AbstractRepository {
@@ -125,6 +126,27 @@ class Repository extends AbstractRepository {
     };
 
     return bankAccount;
+  }
+
+  async getAllFromUserById(userId: string): Promise<BankAccount[]> {
+    const bankAccountsDocuments = await this.databases.listDocuments(
+      env.appWrite.mainDatabaseId,
+      env.appWrite.collections.bankAccountsId,
+      [AppWriteSdk.Query.equal("usersId", userId)],
+    );
+
+    const bankAccounts: BankAccount[] = bankAccountsDocuments.documents.map(
+      (document) => ({
+        $id: document.$id,
+        initialBalance: document.initial_balance,
+        type: document.type,
+        color: document.color,
+        name: document.name,
+        userId,
+      }),
+    );
+
+    return bankAccounts;
   }
 }
 
