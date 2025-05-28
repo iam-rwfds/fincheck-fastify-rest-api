@@ -5,32 +5,40 @@ import { CreateBankAccountSchema } from "~routes/validations/bank-accounts/creat
 import { UpdateBankAccountSchema } from "~routes/validations/bank-accounts/update.schema";
 import type { AssertBankAccountUserRelationService } from "~services/bank-accounts/assert-bank-account-user-relation.service";
 import type { CreateBankAccountService } from "~services/bank-accounts/create.service";
+import type { GetAllBankAccountsFromUserService } from "~services/bank-accounts/get-all-from-user.service";
 import type { UpdateBankAccountService } from "~services/bank-accounts/update.service";
 
 type IController<
   Req extends FastifyRequest = FastifyRequest,
   Reply extends FastifyReply = FastifyReply,
 > = {
-  create: (req: Req, reply: Reply) => Promise<void>;
-  update: (req: Req, reply: Reply) => Promise<void>;
+  [key in "create" | "show" | "update"]: (
+    req: Req,
+    reply: Reply,
+  ) => Promise<void>;
 };
 
 type IControllerConstructorParams = {
   [key in symbol]: CreateBankAccountService &
     UpdateBankAccountService &
-    AssertBankAccountUserRelationService;
+    AssertBankAccountUserRelationService &
+    GetAllBankAccountsFromUserService;
 };
 
 class Controller implements IController {
   #createBankAccountService: CreateBankAccountService;
   #updateBankAccountService: UpdateBankAccountService;
   #assertBankAccountUserRelationService: AssertBankAccountUserRelationService;
+  #getAllBankAccountsFromUserService: GetAllBankAccountsFromUserService;
 
   constructor(deps: IControllerConstructorParams) {
     this.#createBankAccountService = deps[TOKENS.BankAccounts.Services.Create];
     this.#updateBankAccountService = deps[TOKENS.BankAccounts.Services.Update];
     this.#assertBankAccountUserRelationService =
       deps[TOKENS.BankAccounts.Services.AssertUserRelation];
+
+    this.#getAllBankAccountsFromUserService =
+      deps[TOKENS.BankAccounts.Services.GetAllFromUser];
   }
 
   async create(req: FastifyRequest, reply: FastifyReply) {
@@ -97,6 +105,14 @@ class Controller implements IController {
     });
 
     bankAccountResp.isRight() && reply.code(200).send(bankAccountResp.value);
+  }
+
+  async show(req: FastifyRequest, reply: FastifyReply) {
+    const bankAccounts = await this.#getAllBankAccountsFromUserService.execute(
+      req.user.id,
+    );
+
+    reply.code(200).send(bankAccounts.value);
   }
 }
 
