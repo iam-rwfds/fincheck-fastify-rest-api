@@ -20,12 +20,12 @@ abstract class AbstractRepository {
 
   abstract create(
     dto: Omit<BankAccount, "$id" | "userId"> & {
-      userId: BankAccount["userId"]["$id"];
+      userId: BankAccount["userId"];
     },
   ): Promise<BankAccount>;
   abstract update(
     dto: Omit<BankAccount, "userId"> & {
-      userId: BankAccount["userId"]["$id"];
+      userId: BankAccount["userId"];
     },
   ): Promise<BankAccount>;
   abstract findOne(id: string): Promise<BankAccount | null>;
@@ -34,7 +34,7 @@ abstract class AbstractRepository {
 class Repository extends AbstractRepository {
   async create(
     dto: Omit<BankAccount, "$id" | "userId"> & {
-      userId: BankAccount["userId"]["$id"];
+      userId: BankAccount["userId"];
     },
   ): Promise<BankAccount> {
     const { initialBalance, userId, ...data } = dto;
@@ -67,7 +67,7 @@ class Repository extends AbstractRepository {
 
   async update(
     dto: Omit<BankAccount, "userId"> & {
-      userId: BankAccount["userId"]["$id"];
+      userId: BankAccount["userId"];
     },
   ): Promise<BankAccount> {
     const {

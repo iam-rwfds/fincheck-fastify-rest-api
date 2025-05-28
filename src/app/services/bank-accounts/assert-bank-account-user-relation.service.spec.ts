@@ -1,12 +1,12 @@
 import { beforeEach, describe, expect, it } from "bun:test";
 import * as AppWriteSdk from "node-appwrite";
+import { BankAccountUserNotFoundException } from "~exceptions/bank-account/bank-account-user-not-found";
 // import { InvalidCredentialsException } from "~exceptions/auth/invalid-credentials.exception";
 import { TOKENS } from "~infra/tokens";
 import type { BankAccountRepository } from "~repositories/bank-accounts.repository";
+import type { BankAccount } from "../../entities/bank-account.entity";
 import type { User } from "../../entities/user.entity";
 import { AssertBankAccountUserRelationService } from "./assert-bank-account-user-relation.service";
-import { BankAccountUserNotFoundException } from "~exceptions/bank-account/bank-account-user-not-found";
-import type { BankAccount } from "../../entities/bank-account.entity";
 // import type { UsersRepository } from "~repositories/users.repository";
 // import type { User } from "../../entities/user.entity";
 // import { UsersMeService } from "./me.service";
@@ -24,9 +24,7 @@ const bankAccount: BankAccount = {
   initialBalance: 150,
   color: "#ffffff",
   type: "cash",
-  userId: {
-    $id: user.$id,
-  } as Partial<User> as User,
+  userId: user.$id,
 };
 
 let mockDatabases: AppWriteSdk.Databases;
@@ -44,9 +42,7 @@ describe("AssertBankAccountUserRelationService", async () => {
           initialBalance: 150,
           color: "#ffffff",
           type: "cash",
-          userId: {
-            id: user.$id,
-          } as Partial<User> as User,
+          userId: user.$id,
         };
       },
       async findOne() {
@@ -59,10 +55,11 @@ describe("AssertBankAccountUserRelationService", async () => {
           initialBalance: dto.initialBalance,
           name: dto.name,
           type: dto.type,
-          userId: {
-            $id: user.$id,
-          } as Partial<User> as User,
+          userId: user.$id,
         };
+      },
+      async getAllFromUserById() {
+        return [];
       },
       databases: mockDatabases,
     } as Omit<BankAccountRepository, "#databases"> as BankAccountRepository;
@@ -82,10 +79,7 @@ describe("AssertBankAccountUserRelationService", async () => {
   it("should return a lefty error value if bank account is found but it doesn't belong to specified user", async () => {
     mockBankAccountRepository.findOne = async () => ({
       ...bankAccount,
-      userId: {
-        ...bankAccount.userId,
-        $id: AppWriteSdk.ID.unique(),
-      },
+      userId: AppWriteSdk.ID.unique(),
     });
 
     const service = new AssertBankAccountUserRelationService({

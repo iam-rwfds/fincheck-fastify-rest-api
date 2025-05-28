@@ -1,9 +1,8 @@
 import { beforeAll, beforeEach, describe, expect, it } from "bun:test";
 import * as AppWriteSdk from "node-appwrite";
+import { TOKENS } from "~infra/tokens";
 import type { BankAccountRepository } from "~repositories/bank-accounts.repository";
 import { UpdateBankAccountService } from "./update.service";
-import { TOKENS } from "~infra/tokens";
-import type { User } from "../../entities/user.entity";
 
 let mockDatabases: AppWriteSdk.Databases;
 let mockBankAccountRepository: BankAccountRepository;
@@ -24,9 +23,7 @@ describe("UpdateBankAccountService", async () => {
     mockBankAccountRepository.update = async ({ userId, ...dto }) => {
       return {
         ...dto,
-        userId: {
-          $id: userId,
-        } as User,
+        userId,
       };
     };
 
@@ -50,9 +47,7 @@ describe("UpdateBankAccountService", async () => {
       initialBalance: 100,
       name: "Nubank",
       type: "investment",
-      userId: {
-        $id: userId,
-      },
+      userId,
     });
   });
 });

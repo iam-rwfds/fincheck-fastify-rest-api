@@ -1,7 +1,7 @@
 import type { BankAccountUserNotFoundException } from "~exceptions/bank-account/bank-account-user-not-found";
 import { TOKENS } from "~infra/tokens";
 import type { BankAccountRepository } from "~repositories/bank-accounts.repository";
-import { either, type Either } from "~utils/either";
+import { type Either, either } from "~utils/either";
 import type { BankAccount } from "../../entities/bank-account.entity";
 
 type IServiceConstructorParams = {
@@ -10,7 +10,7 @@ type IServiceConstructorParams = {
 
 type Params = Omit<BankAccount, "$id" | "userId"> & {
   id: BankAccount["$id"];
-  userId: BankAccount["userId"]["$id"];
+  userId: BankAccount["userId"];
 };
 
 type ServiceResponse = Either<never, BankAccount>;
