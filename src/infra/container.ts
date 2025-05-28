@@ -8,11 +8,12 @@ import { CategoriesRepository } from "~repositories/categories.repository";
 import { UsersRepository } from "~repositories/users.repository";
 import { AuthSignInService } from "~services/auth/signin.service";
 import { AuthSignUpService } from "~services/auth/signup.service";
+import { AssertBankAccountUserRelationService } from "~services/bank-accounts/assert-bank-account-user-relation.service";
 import { CreateBankAccountService } from "~services/bank-accounts/create.service";
+import { UpdateBankAccountService } from "~services/bank-accounts/update.service";
 import { UsersMeService } from "~services/users/me.service";
 import { TOKENS } from "./tokens";
-import { UpdateBankAccountService } from "~services/bank-accounts/update.service";
-import { AssertBankAccountUserRelationService } from "~services/bank-accounts/assert-bank-account-user-relation.service";
+import { GetAllBankAccountsFromUserService } from "~services/bank-accounts/get-all-from-user.service";
 
 type ContainerRegistrations = {
   [key in symbol]:
@@ -28,6 +29,7 @@ type ContainerRegistrations = {
     | CreateBankAccountService
     | UpdateBankAccountService
     | AssertBankAccountUserRelationService
+    | GetAllBankAccountsFromUserService
     | typeof databases;
 };
 
@@ -59,6 +61,9 @@ container.register({
   ),
   [TOKENS.BankAccounts.Services.AssertUserRelation]: awilix.asClass(
     AssertBankAccountUserRelationService,
+  ),
+  [TOKENS.BankAccounts.Services.GetAllFromUser]: awilix.asClass(
+    GetAllBankAccountsFromUserService,
   ),
 });
 
