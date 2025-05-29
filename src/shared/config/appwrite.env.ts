@@ -1,7 +1,7 @@
 import * as v from "valibot";
 import {
-  type IAppWriteCollectionsEnv,
   appWriteCollectionsEnv,
+  type IAppWriteCollectionsEnv,
 } from "./appwrite-collections.env";
 
 interface IAppWriteEnv {

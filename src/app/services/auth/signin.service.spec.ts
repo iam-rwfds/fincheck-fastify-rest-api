@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it, mock } from "bun:test";
+import { beforeEach, describe, expect, it } from "bun:test";
 import * as AppWriteSdk from "node-appwrite";
 import { InvalidCredentialsException } from "~exceptions/auth/invalid-credentials.exception";
 import { TOKENS } from "~infra/tokens";

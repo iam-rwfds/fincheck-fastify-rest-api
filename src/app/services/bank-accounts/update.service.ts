@@ -1,4 +1,3 @@
-import type { BankAccountUserNotFoundException } from "~exceptions/bank-account/bank-account-user-not-found";
 import { TOKENS } from "~infra/tokens";
 import type { BankAccountRepository } from "~repositories/bank-accounts.repository";
 import { type Either, either } from "~utils/either";

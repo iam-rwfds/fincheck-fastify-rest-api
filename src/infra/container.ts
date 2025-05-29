@@ -1,7 +1,7 @@
 import * as awilix from "awilix";
 import { AuthProvider } from "~controllers/AuthProvider";
-import { UsersController } from "~controllers/UsersController";
 import { BankAccountsController } from "~controllers/bank-accounts.controller";
+import { UsersController } from "~controllers/UsersController";
 import { databases } from "~database/databaseClient";
 import { BankAccountRepository } from "~repositories/bank-accounts.repository";
 import { CategoriesRepository } from "~repositories/categories.repository";
@@ -10,11 +10,11 @@ import { AuthSignInService } from "~services/auth/signin.service";
 import { AuthSignUpService } from "~services/auth/signup.service";
 import { AssertBankAccountUserRelationService } from "~services/bank-accounts/assert-bank-account-user-relation.service";
 import { CreateBankAccountService } from "~services/bank-accounts/create.service";
+import { DeleteBankAccountService } from "~services/bank-accounts/delete.service";
+import { GetAllBankAccountsFromUserService } from "~services/bank-accounts/get-all-from-user.service";
 import { UpdateBankAccountService } from "~services/bank-accounts/update.service";
 import { UsersMeService } from "~services/users/me.service";
 import { TOKENS } from "./tokens";
-import { GetAllBankAccountsFromUserService } from "~services/bank-accounts/get-all-from-user.service";
-import { DeleteBankAccountService } from "~services/bank-accounts/delete.service";
 
 type ContainerRegistrations = {
   [key in symbol]:
