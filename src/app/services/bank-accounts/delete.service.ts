@@ -5,7 +5,7 @@ type IServiceConstructorParams = {
   [key in symbol]: BankAccountRepository;
 };
 
-abstract class DeleteBankAccountService {
+abstract class AbstractService {
   #bankAccountsRepository: BankAccountRepository;
 
   constructor(deps: IServiceConstructorParams) {
@@ -19,7 +19,7 @@ abstract class DeleteBankAccountService {
   abstract execute(id: string): Promise<void>;
 }
 
-class Service extends DeleteBankAccountService {
+class Service extends AbstractService {
   async execute(id: string): Promise<void> {
     await this.bankAccountsRepository.remove(id);
   }
