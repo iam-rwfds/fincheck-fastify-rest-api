@@ -3,6 +3,7 @@ const services = Object.freeze({
   AssertUserRelation: Symbol("AssertUserRelationService"),
   Update: Symbol("UpdateBankAccountService"),
   GetAllFromUser: Symbol("GetAllBankAccountsFromUserService"),
+  Delete: Symbol("DeleteBankAccountService"),
 });
 
 const bankAccountsTokens = Object.freeze({
