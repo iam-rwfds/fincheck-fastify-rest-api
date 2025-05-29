@@ -5,6 +5,7 @@ import { CreateBankAccountSchema } from "~routes/validations/bank-accounts/creat
 import { UpdateBankAccountSchema } from "~routes/validations/bank-accounts/update.schema";
 import type { AssertBankAccountUserRelationService } from "~services/bank-accounts/assert-bank-account-user-relation.service";
 import type { CreateBankAccountService } from "~services/bank-accounts/create.service";
+import type { DeleteBankAccountService } from "~services/bank-accounts/delete.service";
 import type { GetAllBankAccountsFromUserService } from "~services/bank-accounts/get-all-from-user.service";
 import type { UpdateBankAccountService } from "~services/bank-accounts/update.service";
 
@@ -12,7 +13,7 @@ type IController<
   Req extends FastifyRequest = FastifyRequest,
   Reply extends FastifyReply = FastifyReply,
 > = {
-  [key in "create" | "show" | "update"]: (
+  [key in "create" | "show" | "update" | "delete"]: (
     req: Req,
     reply: Reply,
   ) => Promise<void>;
@@ -22,7 +23,8 @@ type IControllerConstructorParams = {
   [key in symbol]: CreateBankAccountService &
     UpdateBankAccountService &
     AssertBankAccountUserRelationService &
-    GetAllBankAccountsFromUserService;
+    GetAllBankAccountsFromUserService &
+    DeleteBankAccountService;
 };
 
 class Controller implements IController {
@@ -30,15 +32,16 @@ class Controller implements IController {
   #updateBankAccountService: UpdateBankAccountService;
   #assertBankAccountUserRelationService: AssertBankAccountUserRelationService;
   #getAllBankAccountsFromUserService: GetAllBankAccountsFromUserService;
+  #deleteBankAccountService: DeleteBankAccountService;
 
   constructor(deps: IControllerConstructorParams) {
     this.#createBankAccountService = deps[TOKENS.BankAccounts.Services.Create];
     this.#updateBankAccountService = deps[TOKENS.BankAccounts.Services.Update];
     this.#assertBankAccountUserRelationService =
       deps[TOKENS.BankAccounts.Services.AssertUserRelation];
-
     this.#getAllBankAccountsFromUserService =
       deps[TOKENS.BankAccounts.Services.GetAllFromUser];
+    this.#deleteBankAccountService = deps[TOKENS.BankAccounts.Services.Delete];
   }
 
   async create(req: FastifyRequest, reply: FastifyReply) {
@@ -113,6 +116,23 @@ class Controller implements IController {
     );
 
     reply.code(200).send(bankAccounts.value);
+  }
+
+  async delete(req: FastifyRequest, reply: FastifyReply) {
+    const id = (req.params as Record<string, string>).id;
+
+    const assertBankAccountResp =
+      await this.#assertBankAccountUserRelationService.execute(id, req.user.id);
+
+    if (assertBankAccountResp.isLeft()) {
+      return reply.code(assertBankAccountResp.value.statusCode).send({
+        message: assertBankAccountResp.value.message,
+      });
+    }
+
+    await this.#deleteBankAccountService.execute(id);
+
+    reply.code(200).send();
   }
 }
 

@@ -30,6 +30,7 @@ abstract class AbstractRepository {
   ): Promise<BankAccount>;
   abstract findOne(id: string): Promise<BankAccount | null>;
   abstract getAllFromUserById(userId: string): Promise<BankAccount[]>;
+  abstract remove(id: string): Promise<void>;
 }
 
 class Repository extends AbstractRepository {
@@ -147,6 +148,14 @@ class Repository extends AbstractRepository {
     );
 
     return bankAccounts;
+  }
+
+  async remove(id: string): Promise<void> {
+    await this.databases.deleteDocument(
+      env.appWrite.mainDatabaseId,
+      env.appWrite.collections.bankAccountsId,
+      id,
+    );
   }
 }
 
