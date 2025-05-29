@@ -150,7 +150,13 @@ class Repository extends AbstractRepository {
     return bankAccounts;
   }
 
-  async remove(id: string): Promise<void> {}
+  async remove(id: string): Promise<void> {
+    await this.databases.deleteDocument(
+      env.appWrite.mainDatabaseId,
+      env.appWrite.collections.bankAccountsId,
+      id,
+    );
+  }
 }
 
 export { Repository as BankAccountRepository };
