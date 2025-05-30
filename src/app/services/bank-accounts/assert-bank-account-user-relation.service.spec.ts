@@ -1,15 +1,11 @@
 import { beforeEach, describe, expect, it } from "bun:test";
 import * as AppWriteSdk from "node-appwrite";
 import { BankAccountUserNotFoundException } from "~exceptions/bank-account/bank-account-user-not-found";
-// import { InvalidCredentialsException } from "~exceptions/auth/invalid-credentials.exception";
 import { TOKENS } from "~infra/tokens";
 import type { BankAccountRepository } from "~repositories/bank-accounts.repository";
 import type { BankAccount } from "../../entities/bank-account.entity";
 import type { User } from "../../entities/user.entity";
 import { AssertBankAccountUserRelationService } from "./assert-bank-account-user-relation.service";
-// import type { UsersRepository } from "~repositories/users.repository";
-// import type { User } from "../../entities/user.entity";
-// import { UsersMeService } from "./me.service";
 
 const user: User = {
   email: "user-email",
@@ -62,6 +58,7 @@ describe("AssertBankAccountUserRelationService", async () => {
         return [];
       },
       databases: mockDatabases,
+      async remove() {},
     } as Omit<BankAccountRepository, "#databases"> as BankAccountRepository;
   });
 
