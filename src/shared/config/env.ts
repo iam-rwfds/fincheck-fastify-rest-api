@@ -1,5 +1,5 @@
 import * as v from "valibot";
-import { type IAppWriteEnv, appWriteEnv } from "./appwrite.env";
+import { appWriteEnv, type IAppWriteEnv } from "./appwrite.env";
 import { type IJwtEnv, jwtEnv } from "./jwt.env";
 
 interface IEnv {

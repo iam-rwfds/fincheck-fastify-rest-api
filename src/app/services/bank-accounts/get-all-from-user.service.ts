@@ -1,7 +1,7 @@
-import { either, type Either } from "~utils/either";
-import type { BankAccount } from "../../entities/bank-account.entity";
-import type { BankAccountRepository } from "~repositories/bank-accounts.repository";
 import { TOKENS } from "~infra/tokens";
+import type { BankAccountRepository } from "~repositories/bank-accounts.repository";
+import { type Either, either } from "~utils/either";
+import type { BankAccount } from "../../entities/bank-account.entity";
 
 type SResponse = Either<unknown, BankAccount[]>;
 
