@@ -1,6 +1,7 @@
 import { authTokens } from "./auth.tokens";
 import { bankAccountsTokens } from "./bank-accounts.tokens";
 import { categoriesTokens } from "./categories.tokens";
+import { transactionsTokens } from "./transactions.tokens";
 import { usersTokens } from "./users.tokens";
 
 const TOKENS = Object.freeze({
@@ -9,6 +10,7 @@ const TOKENS = Object.freeze({
   Users: usersTokens,
   Categories: categoriesTokens,
   BankAccounts: bankAccountsTokens,
+  Transactions: transactionsTokens,
 });
 
 export { TOKENS };
