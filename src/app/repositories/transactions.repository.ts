@@ -29,13 +29,13 @@ abstract class AbstractRepository {
 }
 
 class Repository extends AbstractRepository {
-  async create(_dto: IRepositoryCreateParams): Promise<Transaction> {
+  async create(dto: IRepositoryCreateParams): Promise<Transaction> {
     const transactionDocument = await this.databases.createDocument(
       env.appWrite.mainDatabaseId,
       env.appWrite.collections.transactionsId,
       AppWriteSdk.ID.unique(),
       {
-        ..._dto,
+        ...dto,
       },
     );
 
