@@ -5,6 +5,7 @@ import { UsersController } from "~controllers/UsersController";
 import { databases } from "~database/databaseClient";
 import { BankAccountRepository } from "~repositories/bank-accounts.repository";
 import { CategoriesRepository } from "~repositories/categories.repository";
+import { TransactionsRepository } from "~repositories/transactions.repository";
 import { UsersRepository } from "~repositories/users.repository";
 import { AuthSignInService } from "~services/auth/signin.service";
 import { AuthSignUpService } from "~services/auth/signup.service";
@@ -13,6 +14,7 @@ import { CreateBankAccountService } from "~services/bank-accounts/create.service
 import { DeleteBankAccountService } from "~services/bank-accounts/delete.service";
 import { GetAllBankAccountsFromUserService } from "~services/bank-accounts/get-all-from-user.service";
 import { UpdateBankAccountService } from "~services/bank-accounts/update.service";
+import type { CreateTransactionService } from "~services/transactions/create.service";
 import { UsersMeService } from "~services/users/me.service";
 import { TOKENS } from "./tokens";
 
@@ -32,6 +34,8 @@ type ContainerRegistrations = {
     | AssertBankAccountUserRelationService
     | GetAllBankAccountsFromUserService
     | DeleteBankAccountService
+    | TransactionsRepository
+    | CreateTransactionService
     | typeof databases;
 };
 
@@ -69,6 +73,10 @@ container.register({
   ),
   [TOKENS.BankAccounts.Services.Delete]: awilix.asClass(
     DeleteBankAccountService,
+  ),
+  [TOKENS.Transactions.Repository]: awilix.asClass(TransactionsRepository),
+  [TOKENS.Transactions.Services.Create]: awilix.asClass(
+    CreateBankAccountService,
   ),
 });
 
