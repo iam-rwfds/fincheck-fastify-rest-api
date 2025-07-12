@@ -7,14 +7,14 @@ type IServiceConstructorParams = {
 };
 
 abstract class AbstractService {
-  #bankAccountsRepository: TransactionsRepository;
+  #transactionsRepository: TransactionsRepository;
 
   constructor(deps: IServiceConstructorParams) {
-    this.#bankAccountsRepository = deps[TOKENS.Transactions.Repository];
+    this.#transactionsRepository = deps[TOKENS.Transactions.Repository];
   }
 
-  get bankAccountsRepository() {
-    return this.#bankAccountsRepository;
+  get transactionsRepository() {
+    return this.#transactionsRepository;
   }
 
   abstract execute(
@@ -27,10 +27,12 @@ abstract class AbstractService {
 class Service extends AbstractService {
   async execute(
     dto: Pick<Transaction, "date" | "name" | "type" | "value"> & {
-      [key in `${"user" | "bankAccount" | "category"}Id`]: string;
+      [key in `${"user" | "bankAccount"}Id`]: string;
+    } & {
+      categoryId?: string;
     },
   ): Promise<Transaction> {
-    return await this.bankAccountsRepository.create(dto);
+    return await this.transactionsRepository.create(dto);
   }
 }
 
