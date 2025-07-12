@@ -11,7 +11,9 @@ type IRepositoryCreateParams = Pick<
   Transaction,
   "date" | "name" | "type" | "value"
 > & {
-  [key in `${"user" | "bankAccount" | "category"}Id`]: string;
+  [key in `${"user" | "bankAccount"}Id`]: string;
+} & {
+  categoryId?: string;
 };
 
 abstract class AbstractRepository {
@@ -29,13 +31,19 @@ abstract class AbstractRepository {
 }
 
 class Repository extends AbstractRepository {
-  async create(dto: IRepositoryCreateParams): Promise<Transaction> {
+  async create({
+    bankAccountId: bankAccountsId,
+    userId: usersId,
+    ...dto
+  }: IRepositoryCreateParams): Promise<Transaction> {
     const transactionDocument = await this.databases.createDocument(
       env.appWrite.mainDatabaseId,
-      env.appWrite.collections.transactionsId,
+      "6840ae85000ecc57058f",
       AppWriteSdk.ID.unique(),
       {
         ...dto,
+        bankAccountsId,
+        usersId,
       },
     );
 
