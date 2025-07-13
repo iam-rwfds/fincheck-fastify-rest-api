@@ -7,7 +7,7 @@
   },
   "private": true,
   "devDependencies": {
-    "@biomejs/biome": "2.0.0-beta.5",
+    "@biomejs/biome": "^2.0.6",
     "@types/bun": "latest"
   },
   "peerDependencies": {
@@ -15,9 +15,9 @@
   },
   "dependencies": {
     "@fastify/jwt": "^9.1.0",
-    "@types/jsonwebtoken": "^9.0.9",
+    "@types/jsonwebtoken": "^9.0.10",
     "awilix": "^12.0.5",
-    "fastify": "^5.3.2",
+    "fastify": "^5.4.0",
     "jsonwebtoken": "^9.0.2",
     "node-appwrite": "^15.0.1",
     "valibot": "^1.1.0"

@@ -23,13 +23,17 @@ type ServiceResponse = Either<BankAccountUserNotFoundException, null>;
 
 class Service extends AbstractService {
   async execute(id: string, userId: string): Promise<ServiceResponse> {
-    const bankAccount = await this.bankAccountsRepository.findOne(id);
+    try {
+      const bankAccount = await this.bankAccountsRepository.findOne(id);
 
-    if (!bankAccount || bankAccount.userId !== userId) {
+      if (!bankAccount || bankAccount.userId !== userId) {
+        return either.left(new BankAccountUserNotFoundException());
+      }
+
+      return either.right(null);
+    } catch (_error) {
       return either.left(new BankAccountUserNotFoundException());
     }
-
-    return either.right(null);
   }
 }
 
