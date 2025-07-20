@@ -13,6 +13,13 @@ const main = async () => {
       origin: projectEnv.origins,
     });
 
+    mainFastifyInstance.addHook("onRequest", (request, reply, done) => {
+      if (request.headers.origin) {
+        console.log(`Request from origin: ${request.headers.origin}`);
+      }
+      done();
+    });
+
     for (const route of routes) {
       mainFastifyInstance.route(route);
     }
