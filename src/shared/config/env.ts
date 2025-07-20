@@ -5,6 +5,7 @@ import { type IJwtEnv, jwtEnv } from "./jwt.env";
 interface IEnv {
   get host(): string;
   get port(): number;
+  get origins(): string[];
 
   get jwt(): IJwtEnv;
   get appWrite(): IAppWriteEnv;
@@ -15,10 +16,13 @@ class Env implements IEnv {
   #port: IEnv["port"];
   #appWrite: IEnv["appWrite"];
   #jwt: IEnv["jwt"];
+  #origins: IEnv["origins"];
 
   constructor(init: IEnv) {
     this.#host = init.host;
     this.#port = init.port;
+    this.#origins = init.origins;
+    
     this.#appWrite = init.appWrite;
     this.#jwt = init.jwt;
   }
@@ -29,6 +33,10 @@ class Env implements IEnv {
 
   get port(): IEnv["port"] {
     return this.#port;
+  }
+
+  get origins(): IEnv["origins"] {
+    return this.#origins;
   }
 
   get appWrite(): IEnv["appWrite"] {
@@ -43,6 +51,7 @@ class Env implements IEnv {
 const env = new Env({
   port: Number(process.env.PORT),
   host: process.env.HOST || "",
+  origins: process.env?.ORIGINS?.split(';') ?? [],
   appWrite: appWriteEnv,
   jwt: jwtEnv,
 } satisfies IEnv);
@@ -50,6 +59,7 @@ const env = new Env({
 const EnvSchema = v.object({
   port: v.pipe(v.number(), v.integer(), v.minValue(1)),
   host: v.pipe(v.string(), v.nonEmpty()),
+  origins: v.pipe(v.array(v.pipe(v.string(), v.nonEmpty())), v.minLength(1))
 });
 
 const parsedSchema = v.safeParse(EnvSchema, env);
