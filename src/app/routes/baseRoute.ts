@@ -21,7 +21,7 @@ class BaseRouteSet<
     // super.add()
     super.add({
       ...value,
-      url: this.#prefix ? `/${this.#prefix}${value.url}` : value.url,
+      url: this.#prefix ? `/api/${this.#prefix}${value.url}` : `/api/${value.url}`,
     });
 
     return this;
