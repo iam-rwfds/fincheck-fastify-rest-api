@@ -28,6 +28,7 @@ abstract class AbstractRepository {
   }
 
   abstract create(dto: IRepositoryCreateParams): Promise<Transaction>;
+  abstract listAll(dto: Record<string, unknown>): Promise<Transaction[]>;
 }
 
 class Repository extends AbstractRepository {
@@ -56,6 +57,10 @@ class Repository extends AbstractRepository {
     };
 
     return transaction;
+  }
+
+  async listAll(_dto: Record<string, unknown>): Promise<Transaction[]> {
+    return [];
   }
 }
 

@@ -1,8 +1,8 @@
+import cors from "@fastify/cors";
 import Fastify from "fastify";
 import { env as projectEnv } from "~config/env";
 import authPlugin from "~infra/plugins/auth";
 import { routes } from "~routes";
-import cors from "@fastify/cors";
 
 const mainFastifyInstance = Fastify();
 
@@ -13,7 +13,7 @@ const main = async () => {
       origin: projectEnv.origins,
     });
 
-    mainFastifyInstance.addHook("onRequest", (request, reply, done) => {
+    mainFastifyInstance.addHook("onRequest", (request, _reply, done) => {
       if (request.headers.origin) {
         console.log(`Request from origin: ${request.headers.origin}`);
       }

@@ -22,7 +22,7 @@ class Env implements IEnv {
     this.#host = init.host;
     this.#port = init.port;
     this.#origins = init.origins;
-    
+
     this.#appWrite = init.appWrite;
     this.#jwt = init.jwt;
   }
@@ -51,7 +51,7 @@ class Env implements IEnv {
 const env = new Env({
   port: Number(process.env.PORT),
   host: process.env.HOST || "",
-  origins: process.env?.ORIGINS?.split(';') ?? [],
+  origins: process.env?.ORIGINS?.split(";") ?? [],
   appWrite: appWriteEnv,
   jwt: jwtEnv,
 } satisfies IEnv);
@@ -59,7 +59,7 @@ const env = new Env({
 const EnvSchema = v.object({
   port: v.pipe(v.number(), v.integer(), v.minValue(1)),
   host: v.pipe(v.string(), v.nonEmpty()),
-  origins: v.pipe(v.array(v.pipe(v.string(), v.nonEmpty())), v.minLength(1))
+  origins: v.pipe(v.array(v.pipe(v.string(), v.nonEmpty())), v.minLength(1)),
 });
 
 const parsedSchema = v.safeParse(EnvSchema, env);

@@ -18,6 +18,7 @@ import { UpdateBankAccountService } from "~services/bank-accounts/update.service
 import { CreateTransactionService } from "~services/transactions/create.service";
 import { UsersMeService } from "~services/users/me.service";
 import { TOKENS } from "./tokens";
+import { GetAllTransactionsService } from "~services/transactions/get-all.service";
 
 type ContainerRegistrations = {
   [key in symbol]:
@@ -37,6 +38,7 @@ type ContainerRegistrations = {
     | DeleteBankAccountService
     | TransactionsRepository
     | CreateTransactionService
+    | GetAllTransactionsService
     | TransactionsController
     | typeof databases;
 };
@@ -81,6 +83,7 @@ container.register({
   [TOKENS.Transactions.Services.Create]: awilix.asClass(
     CreateTransactionService,
   ),
+  [TOKENS.Transactions.Services.GetAll]: awilix.asClass(GetAllTransactionsService),
   [TOKENS.Transactions.Controller]: awilix.asClass(TransactionsController),
 });
 

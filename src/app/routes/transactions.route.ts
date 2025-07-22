@@ -6,9 +6,16 @@ import { BaseRouteSet } from "./baseRoute";
 const transactionsRoutes = new BaseRouteSet("transactions");
 
 transactionsRoutes.add({
-  handler: () => {},
+  handler: (req, reply) => {
+    const transactionsController = container.resolve<TransactionsController>(
+      TOKENS.Transactions.Controller,
+    );
+
+    return transactionsController.show(req, reply);
+  },
   method: "GET",
   url: "",
+  onRequest: (req, reply) => req.server.authenticate(req, reply),
 });
 
 transactionsRoutes.add({
