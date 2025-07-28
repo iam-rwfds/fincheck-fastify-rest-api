@@ -6,6 +6,13 @@ type IServiceConstructorParams = {
   [key in symbol]: TransactionsRepository;
 };
 
+type IService = {
+  Params: {
+    userId: string;
+  };
+  Response: Transaction[]
+}
+
 abstract class AbstractService {
   #transactionsRepository: TransactionsRepository;
 
@@ -21,7 +28,7 @@ abstract class AbstractService {
 }
 
 class Service extends AbstractService {
-  async execute(dto: Record<string, unknown>): Promise<Transaction[]> {
+  async execute(dto: IService['Params']): Promise<IService['Response']> {
     return await this.transactionsRepository.listAll(dto);
   }
 }

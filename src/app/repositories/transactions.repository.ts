@@ -16,6 +16,10 @@ type IRepositoryCreateParams = Pick<
   categoryId?: string;
 };
 
+type IRepositoryListAllParams = {
+  userId: string;
+}
+
 abstract class AbstractRepository {
   #databases: AppWriteSdk.Databases;
 
@@ -28,7 +32,7 @@ abstract class AbstractRepository {
   }
 
   abstract create(dto: IRepositoryCreateParams): Promise<Transaction>;
-  abstract listAll(dto: Record<string, unknown>): Promise<Transaction[]>;
+  abstract listAll(dto: IRepositoryListAllParams): Promise<Transaction[]>;
 }
 
 class Repository extends AbstractRepository {
@@ -39,7 +43,7 @@ class Repository extends AbstractRepository {
   }: IRepositoryCreateParams): Promise<Transaction> {
     const transactionDocument = await this.databases.createDocument(
       env.appWrite.mainDatabaseId,
-      "6840ae85000ecc57058f",
+      env.appWrite.collections.transactionsId,
       AppWriteSdk.ID.unique(),
       {
         ...dto,
@@ -59,8 +63,18 @@ class Repository extends AbstractRepository {
     return transaction;
   }
 
-  async listAll(_dto: Record<string, unknown>): Promise<Transaction[]> {
-    return [];
+  async listAll(_dto: IRepositoryListAllParams): Promise<Transaction[]> {
+    const transactionsDocuments = await this.databases.listDocuments(env.appWrite.mainDatabaseId, env.appWrite.collections.transactionsId, [AppWriteSdk.Query.equal("usersId", _dto.userId)])
+
+    const transactions: Transaction[] = transactionsDocuments.documents.map(document => ({
+      $id: document.$id,
+      type: document.type,
+      name: document.name,
+      date: document.date,
+      value: document.value
+    }));
+
+    return transactions;
   }
 }
 

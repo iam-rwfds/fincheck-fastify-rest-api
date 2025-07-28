@@ -64,7 +64,9 @@ class Controller implements IController {
   }
 
   async show(req: FastifyRequest, reply: FastifyReply) {
-    const transactions = await this.#getAllTransactionsService.execute({});
+    const transactions = await this.#getAllTransactionsService.execute({
+      userId: req.user.id
+    });
 
     reply.code(200).send(transactions);    
   }
