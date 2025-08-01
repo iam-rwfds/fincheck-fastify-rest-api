@@ -3,14 +3,48 @@ import { env } from "~config/env";
 import { TOKENS } from "~infra/tokens";
 import type { BankAccount } from "../entities/bank-account.entity";
 
-type IRepositoryConstructorParams = {
-  [key in symbol]: AppWriteSdk.Databases;
+type IRepository<BaseEntity extends BankAccount = BankAccount> = {
+  ConstructorParams: {
+    [key in symbol]: AppWriteSdk.Databases;
+  };
+  Create: {
+    Params: [
+      Omit<BaseEntity, "$id" | "userId"> & {
+        userId: BaseEntity["userId"];
+      },
+    ];
+    Response: Promise<BaseEntity>;
+  };
+  Update: {
+    Params: [
+      Omit<BaseEntity, "userId"> & {
+        userId: BaseEntity["userId"];
+      },
+    ];
+    Response: Promise<BaseEntity>;
+  };
+  FindOne: {
+    Params: [string];
+    Response: Promise<BaseEntity | null>;
+  };
+  GetAllFromUserById: {
+    Params: [string];
+    Response: Promise<
+      (BaseEntity & {
+        currentBalance: number;
+      })[]
+    >;
+  };
+  Remove: {
+    Params: [string];
+    Response: Promise<void>;
+  };
 };
 
 abstract class AbstractRepository {
   #databases: AppWriteSdk.Databases;
 
-  constructor(deps: IRepositoryConstructorParams) {
+  constructor(deps: IRepository["ConstructorParams"]) {
     this.#databases = deps[TOKENS.Database];
   }
 
@@ -19,9 +53,7 @@ abstract class AbstractRepository {
   }
 
   abstract create(
-    dto: Omit<BankAccount, "$id" | "userId"> & {
-      userId: BankAccount["userId"];
-    },
+    ...args: IRepository["Create"]["Params"]
   ): Promise<BankAccount>;
   abstract update(
     dto: Omit<BankAccount, "userId"> & {
@@ -29,16 +61,18 @@ abstract class AbstractRepository {
     },
   ): Promise<BankAccount>;
   abstract findOne(id: string): Promise<BankAccount | null>;
-  abstract getAllFromUserById(userId: string): Promise<BankAccount[]>;
+  abstract getAllFromUserById(userId: string): Promise<
+    (BankAccount & {
+      currentBalance: number;
+    })[]
+  >;
   abstract remove(id: string): Promise<void>;
 }
 
 class Repository extends AbstractRepository {
   async create(
-    dto: Omit<BankAccount, "$id" | "userId"> & {
-      userId: BankAccount["userId"];
-    },
-  ): Promise<BankAccount> {
+    ...[dto]: IRepository["Create"]["Params"]
+  ): IRepository["Create"]["Response"] {
     const { initialBalance, userId, ...data } = dto;
 
     const bankAccountDocument = await this.databases.createDocument(
@@ -68,10 +102,8 @@ class Repository extends AbstractRepository {
   }
 
   async update(
-    dto: Omit<BankAccount, "userId"> & {
-      userId: BankAccount["userId"];
-    },
-  ): Promise<BankAccount> {
+    ...[dto]: IRepository["Update"]["Params"]
+  ): IRepository["Update"]["Response"] {
     const {
       $id,
       userId: usersId,
@@ -106,7 +138,9 @@ class Repository extends AbstractRepository {
     return bankAccount;
   }
 
-  async findOne(id: string): Promise<BankAccount | null> {
+  async findOne(
+    ...[id]: IRepository["FindOne"]["Params"]
+  ): IRepository["FindOne"]["Response"] {
     const bankAccountDocument = await this.databases.getDocument(
       env.appWrite.mainDatabaseId,
       env.appWrite.collections.bankAccountsId,
@@ -129,28 +163,55 @@ class Repository extends AbstractRepository {
     return bankAccount;
   }
 
-  async getAllFromUserById(userId: string): Promise<BankAccount[]> {
+  async getAllFromUserById(
+    ...[userId]: IRepository["GetAllFromUserById"]["Params"]
+  ): IRepository["GetAllFromUserById"]["Response"] {
     const bankAccountsDocuments = await this.databases.listDocuments(
       env.appWrite.mainDatabaseId,
       env.appWrite.collections.bankAccountsId,
       [AppWriteSdk.Query.equal("usersId", userId)],
     );
 
-    const bankAccounts: BankAccount[] = bankAccountsDocuments.documents.map(
-      (document) => ({
+    const bankAccounts: (BankAccount & {
+      currentBalance: number;
+    })[] = bankAccountsDocuments.documents.map((document) => {
+      const totalInTransactions = document.usersId.transactionsId.reduce(
+        (
+          acc: number,
+          transaction: {
+            type: string;
+            value: number;
+          },
+        ) => {
+          return (
+            acc +
+            (transaction.type === "income"
+              ? transaction.value
+              : -transaction.value)
+          );
+        },
+        0,
+      );
+
+      const currentBalance = document.initial_balance + totalInTransactions;
+
+      return {
         $id: document.$id,
         initialBalance: document.initial_balance,
         type: document.type,
         color: document.color,
         name: document.name,
         userId,
-      }),
-    );
+        currentBalance,
+      };
+    });
 
     return bankAccounts;
   }
 
-  async remove(id: string): Promise<void> {
+  async remove(
+    ...[id]: IRepository["Remove"]["Params"]
+  ): IRepository["Remove"]["Response"] {
     await this.databases.deleteDocument(
       env.appWrite.mainDatabaseId,
       env.appWrite.collections.bankAccountsId,
