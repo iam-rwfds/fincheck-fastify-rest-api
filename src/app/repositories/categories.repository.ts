@@ -11,6 +11,9 @@ type IRepositoryWithoutConstructor = {
     userId: User["$id"],
     dto: CreateManyCategoriesParamDTO,
   ): Promise<Category[]>;
+  getAll(
+    userId: User['$id']
+  ): Promise<Category[]>;
 };
 
 type IRepositoryConstructorParams = {
@@ -31,6 +34,10 @@ abstract class AbstractRepository implements IRepositoryWithoutConstructor {
   abstract createMany(
     userId: User["$id"],
     dto: CreateManyCategoriesParamDTO,
+  ): Promise<Category[]>;
+
+  abstract getAll(
+    userId: User['$id'],
   ): Promise<Category[]>;
 }
 
@@ -63,6 +70,30 @@ class CategoriesRepository
         userId: result.userId,
       });
     }
+
+    return categories;
+  }
+
+  async getAll(
+    userId: User['$id']
+  ): Promise<Category[]> {
+    const categoriesDocument = await this.databases.listDocuments(
+      env.appWrite.mainDatabaseId,
+      env.appWrite.collections.categoriesId,
+      [AppWriteSdk.Query.equal('userId', userId)]
+    );
+
+    console.log(categoriesDocument);
+
+    const categories: Category[] = categoriesDocument.documents.map(
+      category => ({
+        $id: category.$id,
+        name: category.name,
+        icon: category.icon,
+        type: category.type,
+        userId: category.userId.$id,
+      })
+    );
 
     return categories;
   }
