@@ -19,6 +19,8 @@ import { CreateTransactionService } from "~services/transactions/create.service"
 import { UsersMeService } from "~services/users/me.service";
 import { TOKENS } from "./tokens";
 import { GetAllTransactionsService } from "~services/transactions/get-all.service";
+import { CategoriesController } from "~controllers/categories.controller";
+import { GetAllCategoriesFromUserService } from "~services/categories/mine.service";
 
 type ContainerRegistrations = {
   [key in symbol]:
@@ -26,6 +28,8 @@ type ContainerRegistrations = {
     | AuthSignInService
     | AuthProvider
     | CategoriesRepository
+    | CategoriesController
+    | GetAllCategoriesFromUserService
     | UsersRepository
     | UsersController
     | UsersMeService
@@ -56,6 +60,8 @@ container.register({
   [TOKENS.Auth.Provider]: awilix.asClass(AuthProvider),
 
   [TOKENS.Categories.Repository]: awilix.asClass(CategoriesRepository),
+  [TOKENS.Categories.Controller]: awilix.asClass(CategoriesController),
+  [TOKENS.Categories.Services.Mine]: awilix.asClass(GetAllCategoriesFromUserService),
 
   [TOKENS.Users.Repository]: awilix.asClass(UsersRepository),
   [TOKENS.Users.Controller]: awilix.asClass(UsersController),
