@@ -15,7 +15,6 @@ type BankAccount = {
   type: BankAccountType;
   color: string;
   userId: string;
-  // transactions?: unknown[]
 } & BaseEntity;
 
 export { BANK_ACCOUNT_TYPES, type BankAccount, type BankAccountType };
