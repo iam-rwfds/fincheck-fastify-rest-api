@@ -11,6 +11,7 @@ const main = async () => {
     await mainFastifyInstance.register(authPlugin);
     await mainFastifyInstance.register(cors, {
       origin: projectEnv.origins,
+      methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     });
 
     mainFastifyInstance.addHook("onRequest", (request, _reply, done) => {
