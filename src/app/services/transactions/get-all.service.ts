@@ -1,6 +1,9 @@
 import { TOKENS } from "~infra/tokens";
 import type { TransactionsRepository } from "~repositories/transactions.repository";
-import type { Transaction } from "../../entities/transaction.entity";
+import type {
+  Transaction,
+  TransactionType,
+} from "../../entities/transaction.entity";
 
 type IServiceConstructorParams = {
   [key in symbol]: TransactionsRepository;
@@ -9,9 +12,15 @@ type IServiceConstructorParams = {
 type IService = {
   Params: {
     userId: string;
+    filters: {
+      type?: TransactionType;
+      year: number;
+      month: number;
+      bankAccountId?: string;
+    };
   };
-  Response: Transaction[]
-}
+  Response: Transaction[];
+};
 
 abstract class AbstractService {
   #transactionsRepository: TransactionsRepository;
@@ -28,7 +37,7 @@ abstract class AbstractService {
 }
 
 class Service extends AbstractService {
-  async execute(dto: IService['Params']): Promise<IService['Response']> {
+  async execute(dto: IService["Params"]): Promise<IService["Response"]> {
     return await this.transactionsRepository.listAll(dto);
   }
 }
