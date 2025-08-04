@@ -1,7 +1,10 @@
 import * as AppWriteSdk from "node-appwrite";
 import { env } from "~config/env";
 import { TOKENS } from "~infra/tokens";
-import type { Transaction } from "../entities/transaction.entity";
+import type {
+  Transaction,
+  TransactionType,
+} from "../entities/transaction.entity";
 
 type IRepositoryConstructorParams = {
   [key in symbol]: AppWriteSdk.Databases;
@@ -18,7 +21,13 @@ type IRepositoryCreateParams = Pick<
 
 type IRepositoryListAllParams = {
   userId: string;
-}
+  filters: {
+    month: number;
+    year: number;
+    bankAccountId?: string;
+    type?: TransactionType;
+  };
+};
 
 abstract class AbstractRepository {
   #databases: AppWriteSdk.Databases;
@@ -63,16 +72,50 @@ class Repository extends AbstractRepository {
     return transaction;
   }
 
-  async listAll(_dto: IRepositoryListAllParams): Promise<Transaction[]> {
-    const transactionsDocuments = await this.databases.listDocuments(env.appWrite.mainDatabaseId, env.appWrite.collections.transactionsId, [AppWriteSdk.Query.equal("usersId", _dto.userId)])
+  async listAll(dto: IRepositoryListAllParams): Promise<Transaction[]> {
+    const date = new Date();
+    date.setFullYear(dto.filters.year);
+    date.setMonth(dto.filters.month);
+    date.setDate(1);
+    date.setHours(0);
+    date.setMinutes(0);
+    date.setSeconds(0);
+    date.setMilliseconds(0);
 
-    const transactions: Transaction[] = transactionsDocuments.documents.map(document => ({
-      $id: document.$id,
-      type: document.type,
-      name: document.name,
-      date: document.date,
-      value: document.value
-    }));
+    const offset = new Date(date);
+    offset.setMonth(date.getMonth() + 1);
+
+    const queries = [
+      AppWriteSdk.Query.equal("usersId", dto.userId),
+      AppWriteSdk.Query.greaterThanEqual("date", date.toISOString()),
+      AppWriteSdk.Query.lessThan("date", offset.toISOString()),
+    ];
+
+    dto.filters.type &&
+      queries.push(AppWriteSdk.Query.equal("type", dto.filters.type));
+
+    dto.filters.bankAccountId &&
+      queries.push(
+        AppWriteSdk.Query.equal("bankAccountsId", dto.filters.bankAccountId),
+      );
+
+    const transactionsDocuments = await this.databases.listDocuments(
+      env.appWrite.mainDatabaseId,
+      env.appWrite.collections.transactionsId,
+      queries,
+    );
+
+    console.log(transactionsDocuments.documents);
+
+    const transactions: Transaction[] = transactionsDocuments.documents.map(
+      (document) => ({
+        $id: document.$id,
+        type: document.type,
+        name: document.name,
+        date: document.date,
+        value: document.value,
+      }),
+    );
 
     return transactions;
   }
