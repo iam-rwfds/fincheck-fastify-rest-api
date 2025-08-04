@@ -17,7 +17,8 @@ type IController<
 };
 
 type IControllerConstructorParams = {
-  [key in symbol]: CreateTransactionService & GetAllTransactionsService &
+  [key in symbol]: CreateTransactionService &
+    GetAllTransactionsService &
     AssertBankAccountUserRelationService;
 };
 
@@ -25,7 +26,7 @@ class Controller implements IController {
   #createTransactionService: CreateTransactionService;
   #getAllTransactionsService: GetAllTransactionsService;
   #assertBankAccountUserRelationService: AssertBankAccountUserRelationService;
-  
+
   constructor(deps: IControllerConstructorParams) {
     this.#createTransactionService = deps[TOKENS.Transactions.Services.Create];
     this.#getAllTransactionsService = deps[TOKENS.Transactions.Services.GetAll];
@@ -65,10 +66,16 @@ class Controller implements IController {
 
   async show(req: FastifyRequest, reply: FastifyReply) {
     const transactions = await this.#getAllTransactionsService.execute({
-      userId: req.user.id
+      userId: req.user.id,
+      filters: {
+        type: req.query.type,
+        year: req.query.year,
+        month: req.query.month,
+        bankAccountId: req.query.bankAccountId,
+      },
     });
 
-    reply.code(200).send(transactions);    
+    reply.code(200).send(transactions);
   }
 }
 
