@@ -105,8 +105,6 @@ class Repository extends AbstractRepository {
       queries,
     );
 
-    console.log(transactionsDocuments.documents);
-
     const transactions: Transaction[] = transactionsDocuments.documents.map(
       (document) => ({
         $id: document.$id,
