@@ -7,7 +7,7 @@ type IServiceConstructorParams = {
   [key in symbol]: BankAccountRepository;
 };
 
-type Params = Omit<BankAccount, "$id" | "userId"> & {
+type Params = Omit<BankAccount, "$id" | "id" | "userId"> & {
   id: BankAccount["$id"];
   userId: BankAccount["userId"];
 };
@@ -33,6 +33,7 @@ class Service extends AbstractService {
     const { id: $id, ...restBankAccount } = dto;
 
     const bankAccount = await this.bankAccountsRepository.update({
+      id: $id,
       $id,
       ...restBankAccount,
     });

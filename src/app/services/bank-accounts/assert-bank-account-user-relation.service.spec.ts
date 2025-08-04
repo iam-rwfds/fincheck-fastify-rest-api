@@ -14,8 +14,11 @@ const user: User = {
   $id: AppWriteSdk.ID.unique(),
 };
 
+const bankAccountId = AppWriteSdk.ID.unique();
+
 const bankAccount: BankAccount = {
-  $id: AppWriteSdk.ID.unique(),
+  id: bankAccountId,
+  $id: bankAccountId,
   name: "Nubank",
   initialBalance: 150,
   color: "#ffffff",
@@ -32,8 +35,11 @@ describe("AssertBankAccountUserRelationService", async () => {
 
     mockBankAccountRepository = {
       async create() {
+        const id = AppWriteSdk.ID.unique();
+
         return {
-          $id: AppWriteSdk.ID.unique(),
+          id,
+          $id: id,
           name: "Nubank",
           initialBalance: 150,
           color: "#ffffff",
@@ -46,6 +52,7 @@ describe("AssertBankAccountUserRelationService", async () => {
       },
       async update(dto) {
         return {
+          id: dto.$id,
           $id: dto.$id,
           color: dto.color,
           initialBalance: dto.initialBalance,

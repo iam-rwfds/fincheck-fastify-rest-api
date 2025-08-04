@@ -10,6 +10,7 @@ type BankAccountType =
   (typeof BANK_ACCOUNT_TYPES)[keyof typeof BANK_ACCOUNT_TYPES];
 
 type BankAccount = {
+  id: string;
   name: string;
   initialBalance: number;
   type: BankAccountType;

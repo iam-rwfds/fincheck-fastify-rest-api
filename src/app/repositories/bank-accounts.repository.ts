@@ -9,7 +9,7 @@ type IRepository<BaseEntity extends BankAccount = BankAccount> = {
   };
   Create: {
     Params: [
-      Omit<BaseEntity, "$id" | "userId"> & {
+      Omit<BaseEntity, "$id" | "id" | "userId"> & {
         userId: BaseEntity["userId"];
       },
     ];
@@ -90,6 +90,7 @@ class Repository extends AbstractRepository {
     );
 
     const bankAccount: BankAccount = {
+      id: bankAccountDocument.$id,
       $id: bankAccountDocument.$id,
       color: bankAccountDocument.color,
       initialBalance: bankAccountDocument.initial_balance,
@@ -106,6 +107,7 @@ class Repository extends AbstractRepository {
   ): IRepository["Update"]["Response"] {
     const {
       $id,
+      id: _,
       userId: usersId,
       initialBalance: initial_balance,
       ...data
@@ -120,13 +122,14 @@ class Repository extends AbstractRepository {
         initial_balance,
         usersId: usersId,
         $id,
-      } satisfies Omit<typeof dto, "initialBalance" | "userId"> & {
+      } satisfies Omit<typeof dto, "initialBalance" | "id" | "userId"> & {
         initial_balance: (typeof dto)["initialBalance"];
         usersId: (typeof dto)["userId"];
       },
     );
 
     const bankAccount: BankAccount = {
+      id: bankAccountDocument.$id,
       $id: bankAccountDocument.$id,
       color: bankAccountDocument.color,
       initialBalance: bankAccountDocument.initial_balance,
@@ -152,6 +155,7 @@ class Repository extends AbstractRepository {
     }
 
     const bankAccount: BankAccount = {
+      id: bankAccountDocument.$id,
       $id: bankAccountDocument.$id,
       color: bankAccountDocument.color,
       initialBalance: bankAccountDocument.initial_balance,
@@ -196,6 +200,7 @@ class Repository extends AbstractRepository {
       const currentBalance = document.initial_balance + totalInTransactions;
 
       return {
+        id: document.$id,
         $id: document.$id,
         initialBalance: document.initial_balance,
         type: document.type,
