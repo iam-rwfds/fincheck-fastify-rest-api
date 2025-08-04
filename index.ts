@@ -14,13 +14,6 @@ const main = async () => {
       methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
     });
 
-    mainFastifyInstance.addHook("onRequest", (request, _reply, done) => {
-      if (request.headers.origin) {
-        console.log(`Request from origin: ${request.headers.origin}`);
-      }
-      done();
-    });
-
     for (const route of routes) {
       mainFastifyInstance.route(route);
     }
@@ -36,8 +29,6 @@ const main = async () => {
         url,
       });
     }
-
-    // console.log("");
 
     await mainFastifyInstance.listen(listeningOptions);
 

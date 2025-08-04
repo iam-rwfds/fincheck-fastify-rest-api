@@ -77,8 +77,6 @@ class CategoriesRepository
       [AppWriteSdk.Query.equal("userId", userId)],
     );
 
-    console.log(categoriesDocument);
-
     const categories: Category[] = categoriesDocument.documents.map(
       (category) => ({
         $id: category.$id,
